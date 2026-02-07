@@ -1,0 +1,111 @@
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{titlesec}
+\usepackage{etoolbox}
+
+% Define colors
+\definecolor{tipgreen}{RGB}{40, 167, 69}
+\definecolor{tipbg}{RGB}{232, 245, 233}
+\definecolor{warnred}{RGB}{220, 53, 69}
+\definecolor{warnbg}{RGB}{255, 235, 238}
+\definecolor{infoblue}{RGB}{23, 162, 184}
+\definecolor{infobg}{RGB}{225, 245, 254}
+\definecolor{noteyellow}{RGB}{255, 193, 7}
+\definecolor{notebg}{RGB}{255, 249, 231}
+\definecolor{codebg}{RGB}{248, 249, 250}
+\definecolor{quotegray}{RGB}{108, 117, 125}
+\definecolor{chapterblue}{RGB}{41, 128, 185}
+
+% Custom tip box
+\newtcolorbox{tipbox}{
+  colback=tipbg,
+  colframe=tipgreen,
+  boxrule=1pt,
+  arc=3pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  fonttitle=\bfseries,
+  title={Tip}
+}
+
+% Custom warning box
+\newtcolorbox{warningbox}{
+  colback=warnbg,
+  colframe=warnred,
+  boxrule=1pt,
+  arc=3pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  fonttitle=\bfseries,
+  title={Warning}
+}
+
+% Custom note box
+\newtcolorbox{notebox}{
+  colback=notebg,
+  colframe=noteyellow,
+  boxrule=1pt,
+  arc=3pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  fonttitle=\bfseries,
+  title={Note}
+}
+
+% Custom info box
+\newtcolorbox{infobox}{
+  colback=infobg,
+  colframe=infoblue,
+  boxrule=1pt,
+  arc=3pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  fonttitle=\bfseries,
+  title={Info}
+}
+
+% Style blockquotes
+\AtBeginEnvironment{quote}{
+  \itshape
+  \color{quotegray}
+}
+
+% Chapter styling
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{chapterblue}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{40pt}
+
+% Section styling
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{chapterblue}}
+  {\thesection}{1em}{}
+
+% Subsection styling
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Page header/footer
+\pagestyle{fancy}
+\fancyhead[L]{}
+\fancyhead[R]{\small\textit{Achraf SOLTANI}}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\small www.achrafsoltani.com}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancypagestyle{plain}{
+  \fancyhead{}
+  \fancyfoot[C]{\thepage}
+  \fancyfoot[R]{\small www.achrafsoltani.com}
+}
