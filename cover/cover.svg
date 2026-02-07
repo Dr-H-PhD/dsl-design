@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="595" height="842" viewBox="0 0 595 842" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark slate-blue gradient background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1729;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a2744;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#243660;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Warm amber accent gradient -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d97706;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Teal gradient for pipeline boxes -->
+    <linearGradient id="tealGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d9488;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Rose gradient -->
+    <linearGradient id="roseGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e11d48;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <rect width="30" height="30" fill="none" stroke="#f59e0b" stroke-width="0.3" opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="595" height="842" fill="url(#bgGradient)"/>
+
+  <!-- Grid overlay -->
+  <rect width="595" height="842" fill="url(#grid)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="595" height="8" fill="url(#accentGradient)"/>
+
+  <!-- Decorative DSL symbols in background -->
+  <g opacity="0.05" fill="#f59e0b" font-family="Consolas, monospace" font-size="20">
+    <text x="30" y="100">{</text>
+    <text x="540" y="80">}</text>
+    <text x="60" y="750">*</text>
+    <text x="520" y="730">:</text>
+    <text x="40" y="200">(</text>
+    <text x="530" y="180">)</text>
+    <text x="50" y="680">#</text>
+    <text x="540" y="660">,</text>
+  </g>
+
+  <!-- MSD Source Code Snippet -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="435" height="155" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1" filter="url(#shadow)"/>
+    <!-- Terminal dots -->
+    <circle cx="15" cy="12" r="5" fill="#ff5f56"/>
+    <circle cx="32" cy="12" r="5" fill="#ffbd2e"/>
+    <circle cx="49" cy="12" r="5" fill="#27c93f"/>
+    <!-- Filename -->
+    <text x="218" y="15" font-family="Consolas, monospace" font-size="9" fill="#8b949e" text-anchor="middle">schema.msd</text>
+
+    <!-- MSD code -->
+    <text x="15" y="42" font-family="Consolas, monospace" font-size="11" fill="#7ee787"># Conceptual Data Model</text>
+    <text x="15" y="60" font-family="Consolas, monospace" font-size="11" fill="#ff7b72">entity</text>
+    <text x="60" y="60" font-family="Consolas, monospace" font-size="11" fill="#d2a8ff">Tourist</text>
+    <text x="108" y="60" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">{</text>
+    <text x="30" y="78" font-family="Consolas, monospace" font-size="11" fill="#f59e0b">*</text>
+    <text x="38" y="78" font-family="Consolas, monospace" font-size="11" fill="#79c0ff">id</text>
+    <text x="52" y="78" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">:</text>
+    <text x="60" y="78" font-family="Consolas, monospace" font-size="11" fill="#ffa657">INT</text>
+    <text x="30" y="96" font-family="Consolas, monospace" font-size="11" fill="#79c0ff">name</text>
+    <text x="62" y="96" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">:</text>
+    <text x="70" y="96" font-family="Consolas, monospace" font-size="11" fill="#ffa657">VARCHAR</text>
+    <text x="116" y="96" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">(</text>
+    <text x="123" y="96" font-family="Consolas, monospace" font-size="11" fill="#79c0ff">255</text>
+    <text x="143" y="96" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">)</text>
+    <text x="15" y="114" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">}</text>
+    <text x="15" y="138" font-family="Consolas, monospace" font-size="11" fill="#ff7b72">link</text>
+    <text x="47" y="138" font-family="Consolas, monospace" font-size="11" fill="#d2a8ff">Tourist</text>
+    <text x="97" y="138" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">(</text>
+    <text x="104" y="138" font-family="Consolas, monospace" font-size="11" fill="#79c0ff">1</text>
+    <text x="111" y="138" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">,</text>
+    <text x="118" y="138" font-family="Consolas, monospace" font-size="11" fill="#79c0ff">N</text>
+    <text x="125" y="138" font-family="Consolas, monospace" font-size="11" fill="#c9d1d9">)</text>
+    <text x="133" y="138" font-family="Consolas, monospace" font-size="11" fill="#d2a8ff">voyager</text>
+  </g>
+
+  <!-- Pipeline Arrow from code to pipeline -->
+  <g transform="translate(297, 258)">
+    <line x1="0" y1="0" x2="0" y2="30" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+    <polygon points="0,35 -6,25 6,25" fill="#f59e0b" opacity="0.6"/>
+  </g>
+
+  <!-- DSL Pipeline Visualization -->
+  <g transform="translate(297, 330)">
+    <text x="0" y="-25" font-family="Georgia, serif" font-size="13" fill="#94a3b8" text-anchor="middle" letter-spacing="3">
+      LANGUAGE PIPELINE
+    </text>
+
+    <!-- Source box -->
+    <rect x="-240" y="0" width="85" height="36" rx="6" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="-197" y="23" font-family="Arial, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Source</text>
+
+    <!-- Arrow 1 -->
+    <line x1="-152" y1="18" x2="-130" y2="18" stroke="#475569" stroke-width="1.5"/>
+    <polygon points="-127,18 -133,13 -133,23" fill="#475569"/>
+
+    <!-- Lexer box -->
+    <rect x="-124" y="0" width="85" height="36" rx="6" fill="none" stroke="#14b8a6" stroke-width="2"/>
+    <text x="-81" y="23" font-family="Arial, sans-serif" font-size="12" fill="#14b8a6" text-anchor="middle" font-weight="bold">Lexer</text>
+
+    <!-- Arrow 2 -->
+    <line x1="-36" y1="18" x2="-14" y2="18" stroke="#475569" stroke-width="1.5"/>
+    <polygon points="-11,18 -17,13 -17,23" fill="#475569"/>
+
+    <!-- Parser box -->
+    <rect x="-8" y="0" width="85" height="36" rx="6" fill="none" stroke="#f59e0b" stroke-width="2"/>
+    <text x="34" y="23" font-family="Arial, sans-serif" font-size="12" fill="#f59e0b" text-anchor="middle" font-weight="bold">Parser</text>
+
+    <!-- Arrow 3 -->
+    <line x1="80" y1="18" x2="102" y2="18" stroke="#475569" stroke-width="1.5"/>
+    <polygon points="105,18 99,13 99,23" fill="#475569"/>
+
+    <!-- Builder box -->
+    <rect x="108" y="0" width="85" height="36" rx="6" fill="none" stroke="#f43f5e" stroke-width="2"/>
+    <text x="150" y="23" font-family="Arial, sans-serif" font-size="12" fill="#f43f5e" text-anchor="middle" font-weight="bold">Builder</text>
+
+    <!-- Token stream illustration below Lexer -->
+    <g transform="translate(-122, 50)">
+      <text x="0" y="12" font-family="Consolas, monospace" font-size="8" fill="#14b8a6" opacity="0.7">ENTITY</text>
+      <text x="42" y="12" font-family="Consolas, monospace" font-size="8" fill="#94a3b8" opacity="0.7">ID</text>
+      <text x="56" y="12" font-family="Consolas, monospace" font-size="8" fill="#14b8a6" opacity="0.7">LBRACE</text>
+      <text x="98" y="12" font-family="Consolas, monospace" font-size="8" fill="#14b8a6" opacity="0.7">STAR</text>
+      <text x="128" y="12" font-family="Consolas, monospace" font-size="8" fill="#94a3b8" opacity="0.7">ID</text>
+      <text x="142" y="12" font-family="Consolas, monospace" font-size="8" fill="#14b8a6" opacity="0.7">COLON</text>
+      <text x="174" y="12" font-family="Consolas, monospace" font-size="8" fill="#94a3b8" opacity="0.7">ID</text>
+      <text x="188" y="12" font-family="Consolas, monospace" font-size="8" fill="#14b8a6" opacity="0.7">...</text>
+    </g>
+  </g>
+
+  <!-- Parse tree visualization -->
+  <g transform="translate(297, 430)">
+    <text x="0" y="-10" font-family="Georgia, serif" font-size="13" fill="#94a3b8" text-anchor="middle" letter-spacing="3">
+      PARSE TREE
+    </text>
+
+    <!-- Root: file -->
+    <rect x="-22" y="5" width="44" height="20" rx="4" fill="#f59e0b" opacity="0.2" stroke="#f59e0b" stroke-width="1"/>
+    <text x="0" y="19" font-family="Consolas, monospace" font-size="9" fill="#f59e0b" text-anchor="middle">file</text>
+
+    <!-- Lines from root -->
+    <line x1="-8" y1="25" x2="-70" y2="42" stroke="#475569" stroke-width="1"/>
+    <line x1="8" y1="25" x2="70" y2="42" stroke="#475569" stroke-width="1"/>
+
+    <!-- entity_block node -->
+    <rect x="-108" y="42" width="76" height="20" rx="4" fill="#14b8a6" opacity="0.2" stroke="#14b8a6" stroke-width="1"/>
+    <text x="-70" y="56" font-family="Consolas, monospace" font-size="9" fill="#14b8a6" text-anchor="middle">entity</text>
+
+    <!-- link_stmt node -->
+    <rect x="35" y="42" width="70" height="20" rx="4" fill="#f43f5e" opacity="0.2" stroke="#f43f5e" stroke-width="1"/>
+    <text x="70" y="56" font-family="Consolas, monospace" font-size="9" fill="#f43f5e" text-anchor="middle">link</text>
+
+    <!-- Children of entity -->
+    <line x1="-85" y1="62" x2="-110" y2="78" stroke="#475569" stroke-width="1"/>
+    <line x1="-70" y1="62" x2="-70" y2="78" stroke="#475569" stroke-width="1"/>
+    <line x1="-55" y1="62" x2="-30" y2="78" stroke="#475569" stroke-width="1"/>
+
+    <!-- Leaf: name -->
+    <text x="-110" y="90" font-family="Consolas, monospace" font-size="8" fill="#d2a8ff" text-anchor="middle">Tourist</text>
+    <!-- Leaf: attr -->
+    <text x="-70" y="90" font-family="Consolas, monospace" font-size="8" fill="#79c0ff" text-anchor="middle">*id:INT</text>
+    <!-- Leaf: attr -->
+    <text x="-26" y="90" font-family="Consolas, monospace" font-size="8" fill="#79c0ff" text-anchor="middle">name:VARCHAR</text>
+
+    <!-- Children of link -->
+    <line x1="55" y1="62" x2="35" y2="78" stroke="#475569" stroke-width="1"/>
+    <line x1="70" y1="62" x2="70" y2="78" stroke="#475569" stroke-width="1"/>
+    <line x1="85" y1="62" x2="105" y2="78" stroke="#475569" stroke-width="1"/>
+
+    <text x="35" y="90" font-family="Consolas, monospace" font-size="8" fill="#d2a8ff" text-anchor="middle">Tourist</text>
+    <text x="70" y="90" font-family="Consolas, monospace" font-size="8" fill="#ffa657" text-anchor="middle">(1,N)</text>
+    <text x="108" y="90" font-family="Consolas, monospace" font-size="8" fill="#d2a8ff" text-anchor="middle">voyager</text>
+  </g>
+
+  <!-- Decorative circuit traces -->
+  <g opacity="0.08" stroke="#f59e0b" stroke-width="1.5" fill="none">
+    <path d="M 40 560 L 40 600 L 80 600"/>
+    <circle cx="40" cy="560" r="3" fill="#f59e0b"/>
+    <circle cx="80" cy="600" r="3" fill="#f59e0b"/>
+    <path d="M 555 560 L 555 600 L 515 600"/>
+    <circle cx="555" cy="560" r="3" fill="#f59e0b"/>
+    <circle cx="515" cy="600" r="3" fill="#f59e0b"/>
+    <path d="M 40 700 L 80 700 L 80 730"/>
+    <circle cx="40" cy="700" r="3" fill="#f59e0b"/>
+    <circle cx="80" cy="730" r="3" fill="#f59e0b"/>
+    <path d="M 555 700 L 515 700 L 515 730"/>
+    <circle cx="555" cy="700" r="3" fill="#f59e0b"/>
+    <circle cx="515" cy="730" r="3" fill="#f59e0b"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="297" y="590" font-family="Georgia, serif" font-size="34" fill="#ffffff" text-anchor="middle" font-weight="bold" filter="url(#glow)">
+    Designing Domain-Specific
+  </text>
+  <text x="297" y="630" font-family="Georgia, serif" font-size="34" fill="#ffffff" text-anchor="middle" font-weight="bold" filter="url(#glow)">
+    Languages
+  </text>
+
+  <!-- Accent line -->
+  <rect x="150" y="650" width="295" height="2" fill="url(#accentGradient)" rx="1"/>
+
+  <!-- Subtitle -->
+  <text x="297" y="680" font-family="Georgia, serif" font-size="16" fill="#f59e0b" text-anchor="middle" font-style="italic">
+    From Theory to Implementation
+  </text>
+
+  <!-- Topic badges -->
+  <g transform="translate(297, 710)">
+    <rect x="-220" y="0" width="80" height="26" rx="13" fill="none" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="-180" y="17" font-family="Arial, sans-serif" font-size="10" fill="#14b8a6" text-anchor="middle">Lexing</text>
+
+    <rect x="-125" y="0" width="70" height="26" rx="13" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="-90" y="17" font-family="Arial, sans-serif" font-size="10" fill="#f59e0b" text-anchor="middle">Parsing</text>
+
+    <rect x="-40" y="0" width="80" height="26" rx="13" fill="none" stroke="#f43f5e" stroke-width="1.5"/>
+    <text x="0" y="17" font-family="Arial, sans-serif" font-size="10" fill="#f43f5e" text-anchor="middle">Semantics</text>
+
+    <rect x="55" y="0" width="80" height="26" rx="13" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="95" y="17" font-family="Arial, sans-serif" font-size="10" fill="#a78bfa" text-anchor="middle">Code Gen</text>
+
+    <rect x="150" y="0" width="70" height="26" rx="13" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="185" y="17" font-family="Arial, sans-serif" font-size="10" fill="#38bdf8" text-anchor="middle">Testing</text>
+  </g>
+
+  <!-- Author -->
+  <text x="297" y="775" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" letter-spacing="3">
+    ACHRAF SOLTANI
+  </text>
+
+  <!-- Website -->
+  <text x="297" y="797" font-family="Arial, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">
+    www.achrafsoltani.com
+  </text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="834" width="595" height="8" fill="url(#accentGradient)"/>
+</svg>
