@@ -11,9 +11,13 @@ Yet while we all *use* DSLs, very few of us *design* them. The craft of creating
 By the end of this book, you will:
 
 - Understand the spectrum from configuration files to general-purpose languages, and where DSLs fit
+
 - Know how to analyse a domain and extract the concepts that a language should express
+
 - Design lexical, syntactic, and semantic rules for a new DSL
+
 - Implement a complete language toolchain: lexer, parser, semantic analyser, and output generator
+
 - Build automatic graph layout for visual output
 - Design robust error handling with multi-error reporting and recovery
 - Write comprehensive tests for every stage of the pipeline
@@ -30,7 +34,9 @@ MSD is small enough to understand completely in one book, yet complex enough to 
 This book assumes you have:
 
 - **Programming experience**: Comfort with at least one language; implementation examples use Python, but the concepts are language-agnostic
+
 - **Basic data structures**: Familiarity with lists, dictionaries, trees, and graphs
+
 - **Curiosity about languages**: An interest in how programming languages work beneath the surface
 
 No prior compiler construction or formal language theory experience is required — we build everything from first principles.
@@ -51,7 +57,9 @@ Each chapter follows a consistent structure:
 
 - **Concepts**: The general theory, applicable to any DSL
 - **Case Study**: How MSD applies the theory
+
 - **Code Walkthrough**: Annotated implementation (in the implementation chapters)
+
 - **Exercises**: 6–7 per chapter, progressing from comprehension to design challenges
 
 The exercises are an essential part of the book. Many ask you to design syntax for hypothetical DSLs or extend MSD — these design exercises develop intuition that cannot be gained from reading alone.

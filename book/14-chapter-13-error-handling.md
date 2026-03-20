@@ -63,8 +63,10 @@ The distinction between errors and warnings has real consequences for tooling:
 
 **Warnings** (severity = `"warning"`):
 - The input is suspicious but technically valid — the tool can still produce output
+
 - CLI: printed to stderr, but exit code 0 and output file produced
 - GUI: warning dialog, import proceeds
+
 - Examples: entity without primary key, size parameter on an unsized type, unknown project property
 
 The `ParseResult.has_errors` property checks for fatal errors only:
@@ -102,7 +104,9 @@ CLI/GUI
 Each stage copies the error list from the previous stage and appends its own:
 
 - **Lexer** returns `(tokens, errors)`
+
 - **Parser** starts with `self._result.errors.extend(lex_errors)`, then appends parser errors
+
 - **Builder** starts with `errors = list(parse_result.errors)`, then appends builder errors
 
 The final consumer — CLI or GUI — receives a single, comprehensive error list from all stages. One call to `builder.build()` returns every diagnostic from every stage.
@@ -225,9 +229,11 @@ This is far more productive than one-at-a-time reporting. Consider a file with f
 
 When an error occurs, the parser does not discard everything:
 
-- Entity A has an invalid attribute `x: BLOB` → Entity A is created with its remaining valid attributes
-- Entity B follows Entity A → Entity B is parsed normally
-- A link references an unknown entity → The link is skipped, but all other links are processed
+- Entity A has an invalid attribute `x: BLOB` $\rightarrow$ Entity A is created with its remaining valid attributes
+
+- Entity B follows Entity A $\rightarrow$ Entity B is parsed normally
+
+- A link references an unknown entity $\rightarrow$ The link is skipped, but all other links are processed
 
 > **Warning:** Panic-mode recovery can occasionally produce **cascade errors** — false errors triggered by the recovery process rather than by genuine mistakes. For example, if the parser skips past a closing brace during recovery, it might misinterpret the next construct. In practice, MSD's grammar is simple enough that cascading is rare, but always review the first error before addressing subsequent ones.
 
@@ -283,7 +289,9 @@ Key properties of `_ParsePanic`:
 
 - **Private** — the underscore prefix signals it is not part of the public API
 - **Never escapes** — always caught within the parser; the caller never sees it
+
 - **Lightweight** — no message, no payload; the error is already recorded before raising
+
 - **Not an error in itself** — it is a control flow mechanism, not a diagnostic
 
 The error is recorded via `self._error()` *before* the exception is raised. The exception's sole purpose is to unwind the call stack to the nearest recovery handler.
@@ -307,7 +315,8 @@ link Tourits (0,N) voyager
 **Lexer stage**: No lexical errors — all characters are valid.
 
 **Parser stage**:
-- Line 2: `BLOB` is not a valid data type → error recorded, `_ParsePanic` raised
+- Line 2: `BLOB` is not a valid data type $\rightarrow$ error recorded, `_ParsePanic` raised
+
 - Attribute-level recovery: skip to next attribute start (`name:`)
 - Line 3: `name: TEXT` parsed successfully
 - Entity A created with one attribute: `name: TEXT`
@@ -315,9 +324,12 @@ link Tourits (0,N) voyager
 
 **Builder stage**:
 - First entity A: registered in `entity_names`
-- Second entity A: duplicate detected → error "duplicate entity name: 'A'"
+
+- Second entity A: duplicate detected $\rightarrow$ error "duplicate entity name: 'A'"
+
 - Association `voyager`: built successfully
-- Link: entity name `Tourits` not found → Levenshtein search → distance 2 from `Tourist`... but `Tourist` is not defined either. No suggestion within distance 3 → error "unknown entity: 'Tourits'"
+
+- Link: entity name `Tourits` not found $\rightarrow$ Levenshtein search $\rightarrow$ distance 2 from `Tourist`... but `Tourist` is not defined either. No suggestion within distance 3 $\rightarrow$ error "unknown entity: 'Tourits'"
 
 **Final error list** (3 errors, 0 warnings):
 ```

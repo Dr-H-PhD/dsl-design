@@ -42,7 +42,9 @@ Even the simplest DSLs have types, though they may not call them that. A Dockerf
 Making types explicit in a DSL serves three purposes:
 
 - **Validation**: the tool can reject invalid input before it causes downstream failures.
+
 - **Documentation**: the type annotations tell the user what is expected, even without reading a manual.
+
 - **Code generation**: the type information drives output. MSD translates `INT` into `INTEGER` in PostgreSQL DDL; it cannot do this without knowing the type.
 
 ### Simple Types
@@ -93,6 +95,7 @@ SQL follows the same pattern: `VARCHAR(n)`, `NUMERIC(p,s)`, `CHAR(n)`. The paral
 A key design decision is *when* type validation occurs. There are two common strategies:
 
 - **Parse-time validation**: check types as they are parsed. This is MSD's approach — an unknown type like `BLOB` causes an immediate error, and parsing of that attribute aborts via panic-mode recovery.
+
 - **Build-time validation**: accept any identifier as a type during parsing and validate it later, during semantic analysis. This is more flexible — it allows type aliases or user-defined types — but delays error reporting.
 
 MSD chose parse-time validation because its type set is closed and small. There is no benefit to deferring the check, and rejecting early means the error message can point precisely at the offending token.
@@ -118,6 +121,7 @@ Flat scope has the virtue of simplicity. The user never needs to think about whi
 For contrast, consider how other languages handle scope:
 
 - **Block scope** (C, Java): names declared inside a `{ ... }` block are local to that block. A variable declared inside a `for` loop is invisible outside it.
+
 - **Lexical scope** (Python, JavaScript): nested blocks can see names from their enclosing blocks, but not vice versa. An inner function can read variables from the outer function that defined it.
 
 These models are more powerful but more complex. A DSL designer should adopt them only when the domain genuinely requires nested definitions. A configuration language for infrastructure (like Terraform's `resource` blocks) benefits from block scope because resources are naturally grouped. A data modelling language like MSD, where everything is inherently global, does not.
@@ -127,7 +131,9 @@ These models are more powerful but more complex. A DSL designer should adopt the
 MSD uses three separate flat namespaces:
 
 1. **Entity names** — each entity must have a unique name.
+
 2. **Association names** — each association must have a unique name, and must not collide with any entity name.
+
 3. **Attribute names** — attributes are scoped to their enclosing entity or association. Two different entities may each have an attribute called `name` without conflict, but a single entity may not have two attributes called `name`.
 
 This is a pragmatic middle ground. The global namespaces for entities and associations ensure that link references are unambiguous. The entity-local namespace for attributes avoids needless uniqueness constraints on common attribute names like `id`, `name`, or `date`.
@@ -168,6 +174,7 @@ The `link` statement appears *before* the `entity` and `association` declaration
 There are two common strategies:
 
 - **Single-pass, reject forward references**: process the file top to bottom, and if a name is used before it is declared, report an error. This is simple to implement but forces the user to arrange declarations in dependency order, which can be tedious.
+
 - **Multi-pass, collect then resolve**: first pass collects all declarations; second pass resolves all references. Forward references work naturally because all names are known before resolution begins.
 
 MSD uses the multi-pass approach. The parser's job is to collect all declarations — entities, associations, links — into a `ParseResult` intermediate representation. The builder then processes this intermediate representation, first registering all entity and association names, then resolving link references against the complete set of known names. This is why the parser produces `ParsedEntity`, `ParsedAssociation`, and `ParsedLink` data classes rather than final model objects — the intermediate representation exists precisely to enable multi-pass processing.
@@ -205,7 +212,9 @@ The builder rejects this with `duplicate entity name: 'Student'`. The second dec
 Alternative strategies exist:
 
 - **Last-wins**: the second declaration silently replaces the first. CSS follows this model — later rules override earlier ones. This is useful for languages where overriding is a feature, but it can mask errors.
+
 - **Merge**: the two declarations are combined. Protocol Buffers allows extending message types across files. This is powerful but complex.
+
 - **Namespace**: allow duplicate names in different namespaces. Java allows a class and a package to share a name because they occupy different namespaces.
 
 For MSD, strict uniqueness with an error on duplicates is the right choice. A data model with two entities named `Student` is almost certainly a mistake, not an intentional override.
@@ -259,6 +268,7 @@ Notice that some validations occur during parsing (types, cardinalities) while o
 MSD distinguishes between **errors** and **warnings**:
 
 - **Errors** indicate that the input is definitely wrong and the tool cannot produce correct output. A link referencing a non-existent entity is an error — the tool cannot generate SQL for a foreign key to a table that does not exist.
+
 - **Warnings** indicate that the input is probably wrong but the tool can still proceed. An entity without a primary key is a warning — the tool can still generate a CREATE TABLE statement (though it will lack a PRIMARY KEY clause), and some modelling scenarios genuinely omit primary keys during early design.
 
 The classification matters for tooling. MSD's CLI uses exit code 1 for errors and exit code 0 for warnings, allowing CI pipelines to distinguish between fatal problems and advisory notices. The GUI displays errors in red and warnings in amber.
@@ -282,8 +292,11 @@ If your DSL's error messages are an afterthought, your DSL's user experience is 
 A well-designed error message is:
 
 1. **Specific**: it identifies exactly what is wrong. Not "invalid input" but "unknown data type: 'BLOB'."
+
 2. **Located**: it points to where the problem is. MSD errors include the filename, line number, and column number — enough for any editor to jump to the exact location.
+
 3. **Actionable**: it tells the user what to do. Listing valid types after rejecting an unknown one gives the user everything they need to fix the problem without consulting a reference manual.
+
 4. **Contextual**: it shows what was expected alongside what was found. "Expected IDENTIFIER, got RBRACE ('}')" tells the user that a closing brace appeared where a name was expected — suggesting a missing attribute or an extra brace.
 
 ### Anti-Patterns
@@ -292,7 +305,9 @@ Common error message anti-patterns include:
 
 - **"Syntax error"** — tells the user nothing about what is actually wrong.
 - **"Error at line 7"** — locates the problem but does not describe it.
+
 - **"E0042"** — error codes without explanations require the user to look up the code in a separate document.
+
 - **"Invalid token"** — too vague. Which token? Why is it invalid? What should it be?
 
 ### MSD's Error Message Design

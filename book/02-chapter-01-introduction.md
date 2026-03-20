@@ -89,7 +89,9 @@ Use a **domain-specific language** when:
 
 - The problem is well-defined and recurs often
 - The audience includes non-programmers or domain specialists
+
 - Correctness matters and domain constraints can be enforced at the language level
+
 - The notation should match how experts already think about the domain
 
 ## 1.3 Internal vs External DSLs
@@ -196,9 +198,13 @@ Building a DSL is a significant investment. A well-designed DSL can save thousan
 Ask these five questions before building a DSL:
 
 1. **Is the domain well-defined?** Can you enumerate the core concepts (entities, operations, constraints) in a page or two?
+
 2. **Is the task repetitive?** Will users write many instances of similar specifications?
+
 3. **Who are the users?** Are they programmers, domain experts, or both?
+
 4. **What outputs are needed?** Will the DSL generate code, configuration, documentation, or visualisations?
+
 5. **How stable is the domain?** Will the core concepts still make sense in two years?
 
 If you answered "yes" to questions 1, 2, and 5, and "multiple" to question 4, a DSL is likely justified. If most answers are uncertain, start with a library and see whether a language naturally emerges from usage patterns.
@@ -300,8 +306,11 @@ Dockerfiles describe how to build a container image as a sequence of layers. Eac
 Across all five examples, several patterns emerge:
 
 1. **Syntax mirrors domain concepts.** SQL's `SELECT`/`FROM`/`WHERE` mirrors relational algebra. CSS selectors mirror the DOM tree. Dockerfile commands mirror image layers.
+
 2. **Declarative over imperative.** Users describe *what* they want, not *how* to achieve it. This enables optimisation and analysis by tools.
+
 3. **Constrained expressiveness.** None of these languages tries to do everything. Each stays firmly within its domain, relying on general-purpose languages for anything outside it.
+
 4. **Readable by domain experts.** A database administrator can read SQL. A designer can read CSS. A DevOps engineer can read a Dockerfile. The language speaks the domain's vocabulary.
 
 ## 1.7 The MSD Case Study
@@ -347,8 +356,11 @@ This file defines two entities (`Student` and `Course`), one association (`enrol
 From this single file, Merisio can generate:
 
 - A **visual diagram** showing entities as rectangles and associations as ovals, connected by labelled lines
+
 - An **MLD** (logical data model) showing the resulting relational tables, with foreign keys derived from cardinality rules
+
 - **PostgreSQL DDL** (SQL `CREATE TABLE` statements) ready to execute against a database
+
 - A **data dictionary** cataloguing every entity, attribute, and relationship
 
 One source file, four outputs. This multi-output capability is one of the hallmarks of a well-designed DSL.
@@ -358,7 +370,9 @@ One source file, four outputs. This multi-output capability is one of the hallma
 MSD occupies a pedagogical sweet spot:
 
 - **Small enough to understand completely.** MSD has four keywords (`project`, `entity`, `association`, `link`), thirteen data types, four cardinality pairs, and two comment styles. You can hold the entire language in your head.
+
 - **Complex enough to illustrate real design decisions.** Despite its small size, MSD involves context-sensitive lexing (the `project` block uses different tokenisation rules), recursive descent parsing with error recovery, name resolution with typo suggestion (Levenshtein distance), semantic validation (every entity needs a primary key, every association needs at least two links), and force-directed graph layout.
+
 - **Genuinely useful.** MSD is not a toy language invented for a textbook. It is the input format for a real application used by students and educators in database courses.
 
 ### What we shall build
@@ -366,9 +380,13 @@ MSD occupies a pedagogical sweet spot:
 Over the course of this book, you will see every stage of MSD's design and implementation:
 
 - **Chapter 3** analyses the MERISE domain and identifies the concepts MSD must express
+
 - **Chapters 4--6** cover lexical, syntactic, and semantic design as general principles
+
 - **Chapter 7** applies those principles to design MSD from scratch, producing a complete language specification
+
 - **Chapters 8--12** implement the full MSD toolchain: lexer, parser, semantic analyser, output generator, and automatic graph layout engine
+
 - **Chapters 13--15** address error handling, testing, and integration into CLI and GUI tools
 
 By the end, you will have not only a deep understanding of one DSL, but a transferable set of skills for designing and building any external DSL.

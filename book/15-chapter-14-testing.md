@@ -94,7 +94,7 @@ def _values(tokens):
 
 These helpers let tests focus on meaningful tokens without noise from structural tokens.
 
-### What to Test
+### What to Test: Lexer
 
 | Category | Examples |
 |----------|----------|
@@ -123,7 +123,7 @@ This verifies that comments are stripped from project values — a subtle behavi
 
 ## 14.3 Parser Tests
 
-### What to Test
+### What to Test: Parser
 
 | Category | Examples |
 |----------|----------|
@@ -178,7 +178,7 @@ Parameterised tests cover all valid combinations concisely.
 
 ## 14.4 Semantic Tests (Builder Tests)
 
-### What to Test
+### What to Test: Semantics
 
 | Category | Examples |
 |----------|----------|
@@ -227,7 +227,7 @@ def test_save_and_load(self, parser, builder, tmp_path):
     assert loaded.name == "Tourism System"
 ```
 
-This test verifies the complete pipeline: MSD text → parse → build → save as JSON → reload → verify. It uses pytest's `tmp_path` fixture for a clean temporary directory.
+This test verifies the complete pipeline: MSD text $\rightarrow$ parse $\rightarrow$ build $\rightarrow$ save as JSON $\rightarrow$ reload $\rightarrow$ verify. It uses pytest's `tmp_path` fixture for a clean temporary directory.
 
 ## 14.5 Integration Tests
 
@@ -373,7 +373,7 @@ python -m pytest tests/test_msd_*.py --cov=src/msd
 
 **Exercise 14.4.** MSD has 64 tests for approximately 600 lines of implementation code — roughly one test per 10 lines. Is this ratio appropriate? Compare with other projects you have worked on. What is the relationship between test count and code confidence?
 
-**Exercise 14.5.** The round-trip test verifies parse → build → save → load. Design a **reverse round-trip** test: load a .merisio file, generate MSD text from it, parse the text, and verify the result matches the original. What additional code would you need to implement?
+**Exercise 14.5.** The round-trip test verifies parse $\rightarrow$ build $\rightarrow$ save $\rightarrow$ load. Design a **reverse round-trip** test: load a .merisio file, generate MSD text from it, parse the text, and verify the result matches the original. What additional code would you need to implement?
 
 **Exercise 14.6.** Write a property-based test (using Hypothesis or a similar library) that generates random valid MSD files and verifies that they parse without errors. What generators would you need?
 

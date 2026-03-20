@@ -173,6 +173,7 @@ Medium DSLs take hours to learn and weeks to master. They are expressive enough 
 Full DSLs approach the power of general-purpose languages while remaining anchored in a specific domain. They often include variables, functions, control flow, and module systems.
 
 - **TeX**: a complete typesetting language with macros and Turing-complete expansion
+
 - **Emacs Lisp**: a Lisp dialect specialised for text editing
 - **Vim script**: an editor scripting language with its own type system
 
@@ -263,7 +264,9 @@ Types serve two purposes in DSLs: they constrain what users can write (catching 
 Constraints are rules that restrict valid programs beyond what syntax alone can enforce. They are part of the *semantic* layer.
 
 - **SQL**: foreign key constraints, `NOT NULL`, `UNIQUE`
+
 - **MSD**: cardinality rules (a link must specify exactly one of `(0,1)`, `(0,N)`, `(1,1)`, `(1,N)`)
+
 - **Terraform**: required attributes, valid values for `instance_type`
 
 Constraints are what make a DSL *safe*. Without them, syntactically valid programs can produce nonsensical results.

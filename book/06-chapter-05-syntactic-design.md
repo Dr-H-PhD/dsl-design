@@ -62,7 +62,9 @@ type_expr    = TYPE_NAME [ "(" INTEGER ")" ] ;
 Reading these productions aloud:
 
 - An **entity block** is the keyword `entity`, followed by an identifier (the entity name), followed by a left brace, followed by zero or more attributes, followed by a right brace.
+
 - An **attribute** is an optional asterisk (marking a primary key), followed by an identifier (the attribute name), followed by a colon, followed by a type expression.
+
 - A **type expression** is a type name, optionally followed by a size in parentheses.
 
 ### Writing EBNF Productions
@@ -70,9 +72,13 @@ Reading these productions aloud:
 When writing EBNF, follow these guidelines:
 
 1. **Start with the top-level rule.** What is the outermost structure of a valid file?
+
 2. **Break complex rules into sub-rules.** If a production is growing unwieldy, extract a named sub-rule.
+
 3. **Use repetition `{ }` for lists.** Avoid recursive definitions when iteration suffices.
+
 4. **Use alternatives `|` for choices.** Each alternative should begin with a distinct token to aid parsing.
+
 5. **Name rules after what they represent**, not how they are parsed.
 
 ### Why Formal Grammars Matter
@@ -90,7 +96,9 @@ An informal specification such as "an entity has a name and some attributes insi
 The notation **LL(1)** stands for:
 
 - **L** — Left-to-right scanning of the input (we read tokens from left to right)
+
 - **L** — Leftmost derivation (we always expand the leftmost non-terminal first)
+
 - **1** — One token of lookahead (we decide which production to apply by examining only the next token)
 
 An LL(1) grammar is one where, at every point in parsing, looking at the single next token is sufficient to determine which production rule to apply. There is never any ambiguity or backtracking required.
@@ -119,6 +127,7 @@ One token of lookahead. No backtracking. No ambiguity. This is the direct conseq
 To verify that a grammar is LL(1), compiler theory defines two functions:
 
 - **FIRST(A)**: the set of tokens that can appear at the beginning of any string derived from rule A.
+
 - **FOLLOW(A)**: the set of tokens that can appear immediately after a string derived from A.
 
 A grammar is LL(1) if, for every rule with alternatives `A = B | C`, the FIRST sets of B and C are disjoint. Intuitively: if two alternatives can both start with the same token, the parser cannot tell them apart with one token of lookahead.
@@ -268,8 +277,11 @@ association enrolled_in {
 The reasons are:
 
 1. **Familiarity.** Most MSD users will have encountered C-family languages, JSON, or CSS. Curly braces are immediately understood.
+
 2. **Explicit structure.** The parser can unambiguously find block boundaries without tracking whitespace.
+
 3. **Easy parsing.** `LBRACE` and `RBRACE` are single-character tokens. No indentation tracking required.
+
 4. **Error recovery.** When the parser encounters an error inside a block, it can skip forward to the closing brace and resume parsing the next construct.
 
 ---
@@ -446,7 +458,9 @@ Both are valid according to the grammar. Most languages resolve this by conventi
 Common sources of ambiguity in DSL design:
 
 - **Overloaded keywords.** If the same keyword introduces two different constructs, the parser may not be able to distinguish them.
+
 - **Optional clauses.** When multiple optional elements can be omitted, the parser may not know which ones are present.
+
 - **Shared prefixes.** Two constructs that begin identically force the parser to look ahead further to disambiguate.
 
 ### Strategies for Avoiding Ambiguity
@@ -644,10 +658,15 @@ Syntactic design is where a language takes shape. The choices you make — block
 Key principles from this chapter:
 
 - **Formalise your grammar in EBNF before writing a parser.** The grammar is the specification; the parser is the implementation.
+
 - **Aim for LL(1).** A grammar where one token of lookahead suffices is a grammar that yields a clean, simple, maintainable recursive descent parser.
+
 - **Choose block structure deliberately.** Curly braces, indentation, and keywords each have trade-offs. Pick the style that best serves your domain and your users.
+
 - **Prefer shallow nesting.** Every level of nesting adds complexity. Use the minimum depth your domain requires.
+
 - **Eliminate ambiguity by design.** Unique keywords, explicit delimiters, and fixed-structure statements prevent ambiguity from arising in the first place.
+
 - **Optimise for readability.** The parser is written once; the language is used daily. When readability and parseability conflict, favour the user.
 
 In the next chapter, we move beyond syntax to *semantics* — the meaning of well-formed programs. A syntactically valid MSD file can still contain errors: references to entities that do not exist, duplicate attribute names, or cardinalities that make no sense. Semantic analysis catches what syntax cannot.

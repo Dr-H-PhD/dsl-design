@@ -151,7 +151,7 @@ A domain-specific language for describing MERISE conceptual data models in plain
 The JSON project file format used by Merisio. Contains the complete model (entities, associations, links, layout positions, metadata). Produced by the MSD pipeline or by saving from the GUI.
 
 **`.msd` File**
-A plain text file containing MSD source code. Processed by the MSD pipeline (lexer → parser → builder) to produce a `.merisio` project file.
+A plain text file containing MSD source code. Processed by the MSD pipeline (lexer $\rightarrow$ parser $\rightarrow$ builder) to produce a `.merisio` project file.
 
 **Primary Key**
 An attribute (or set of attributes) that uniquely identifies an instance of an entity. Marked with the `*` prefix in MSD. An entity without a primary key triggers a warning.

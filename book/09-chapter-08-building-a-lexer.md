@@ -17,11 +17,13 @@ The lexer's interface has two inputs and two outputs:
 **Inputs:**
 
 - **Source text**: the raw string to tokenise (the contents of a `.msd` file, for instance).
+
 - **Filename**: an optional string used solely for error reporting — it never affects the tokenisation logic.
 
 **Outputs:**
 
 - **Token list**: an ordered sequence of `Token` objects representing every meaningful element in the source.
+
 - **Error list**: a (possibly empty) list of errors encountered during scanning.
 
 This interface establishes a clean contract. The lexer handles *characters* — whitespace, symbols, the boundaries of words and numbers. The parser, which comes next in the pipeline, handles *structure* — which tokens can follow which, how blocks nest, what constitutes a valid declaration. The lexer does not know that `entity` must be followed by an identifier and then a brace. It simply recognises `entity` as a keyword and emits the corresponding token. Structural validation belongs to the parser.
@@ -37,7 +39,9 @@ Every token carries a **source location**: the line number and column number whe
 A token is a small data object with four fields:
 
 - **Type**: an enumeration value identifying the kind of token (`ENTITY`, `LBRACE`, `IDENTIFIER`, etc.).
+
 - **Value**: the original text fragment from the source (`"entity"`, `"{"`, `"Student"`).
+
 - **Line**: the 1-based line number where the token appears.
 - **Column**: the 1-based column number where the token starts.
 
@@ -184,6 +188,7 @@ The naive approach is to check for each keyword explicitly before checking for i
 The standard technique, used by virtually every hand-written lexer, is simpler:
 
 1. **Lex everything as an identifier.** When the lexer encounters a letter or underscore, it consumes all subsequent alphanumeric characters and underscores, producing a word string.
+
 2. **Look up the word in a keyword table.** If the word is found, emit the corresponding keyword token. If not, emit an `IDENTIFIER` token.
 
 The keyword table is a simple dictionary:
@@ -255,6 +260,7 @@ In the project block, the colon separates a metadata key from its value. After t
 The lexer tracks two pieces of state:
 
 - **`in_project_block`**: a boolean flag, set to `True` when the `project` keyword is encountered.
+
 - **`brace_depth`**: an integer counter, incremented on `{` and decremented on `}`.
 
 When `brace_depth` returns to zero, `in_project_block` is cleared:
@@ -344,10 +350,15 @@ With all the pieces in place, let us trace through the complete `MSDLexer.tokeni
 
 1. **Whitespace**: spaces and tabs are skipped silently.
 2. **Comments**: `#` or `//` cause a `break` — the rest of the line is ignored.
+
 3. **Symbols**: `{`, `}`, `(`, `)`, `,`, `*` each emit their corresponding token.
+
 4. **Colon** (context-sensitive): emits `COLON`, then captures `STRING_VALUE` if inside a project block.
+
 5. **Integers**: sequences of digits are consumed and emitted as `INTEGER`.
+
 6. **Identifiers/keywords**: sequences starting with a letter or underscore are consumed, then checked against the keyword table.
+
 7. **Error**: any character that reaches this point is unexpected.
 
 This ordering matters. Comments must be checked before symbols, because `//` starts with `/`, which might otherwise be treated as an unexpected character. Symbols must be checked before identifiers, because `*` might otherwise be misinterpreted. The integer check must come before the identifier check, because digits are not valid identifier-start characters — but if a digit appeared after the identifier check, it would not match `ch.isalpha()` and would fall through to the error case.
@@ -467,7 +478,9 @@ Several design choices in the MSD lexer deserve explicit justification, as they 
 Three features of MSD make line-by-line scanning the natural choice:
 
 - **Comments** consume the rest of a line — `break` is the simplest possible implementation.
+
 - **NEWLINE tokens** are emitted once per source line — the outer loop's end provides the natural emission point.
+
 - **Context-sensitive colon** captures the rest of a line as a `STRING_VALUE` — `line_text[col:]` gives us exactly the right slice.
 
 A character-by-character scanner would need to search forward for `\n` in each of these three cases.

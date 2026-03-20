@@ -71,6 +71,7 @@ For DSLs, full keyword reservation is almost always the right choice. The keywor
 Should `Entity`, `ENTITY`, and `entity` all be recognised as the same keyword? Languages differ:
 
 - **Case-insensitive keywords**: SQL (`SELECT` and `select` are equivalent), MSD (`Entity` and `entity` are equivalent)
+
 - **Case-sensitive keywords**: Python (`def` is a keyword, `Def` is not), Go, Rust, C
 
 MSD chose case-insensitive keywords for a pragmatic reason: users coming from different backgrounds have different conventions. A French computer science student accustomed to writing `ENTITE` in uppercase might naturally type `ENTITY` or `Entity`. By accepting all casings, MSD removes a source of unnecessary errors.
@@ -338,7 +339,9 @@ Removing the indentation changes the program's meaning -- or more likely, causes
 MSD uses insignificant whitespace. Indentation is conventional -- the examples in this book indent block contents by four spaces -- but the lexer does not enforce it. This decision was made for several reasons:
 
 1. **Simplicity**: The lexer does not need to track indentation levels or emit INDENT/DEDENT tokens.
+
 2. **Robustness**: Users can copy-paste MSD fragments without worrying about indentation.
+
 3. **Familiarity**: MSD's target audience (computer science students) is accustomed to brace-delimited blocks from C and Java.
 
 That said, MSD's lexer does emit NEWLINE tokens. These are not strictly necessary for a language with insignificant whitespace, but they serve a practical purpose: they allow the parser to provide accurate line numbers in error messages and to handle the line-oriented nature of the `project {}` block, where each key-value pair occupies a single line.

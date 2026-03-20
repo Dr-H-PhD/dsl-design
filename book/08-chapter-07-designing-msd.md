@@ -57,9 +57,13 @@ This table is the bridge between the domain expert's vocabulary and the language
 Beyond the vocabulary, the domain imposes constraints that the language must enforce:
 
 - **Unique names**: No two entities may share a name. No two associations may share a name. No entity and association may share a name.
+
 - **Valid cardinalities**: The minimum must be 0 or 1. The maximum must be 1 or N. This gives exactly four valid cardinalities: (0,1), (0,N), (1,1), (1,N).
+
 - **Valid data types**: Attributes must have types drawn from a fixed set of database-oriented types.
+
 - **Entity completeness**: Every entity must have at least one attribute (an entity with no attributes has no reason to exist).
+
 - **Link validity**: Every link must reference an existing entity and an existing association.
 
 > **Note:** The domain analysis does not prescribe *how* these constraints are enforced — only *what* they are. Whether a missing primary key is an error or a warning, for instance, is a semantic design decision made later.
@@ -102,8 +106,11 @@ Primary key attributes are marked with a `*` prefix: `*student_id: INT`. This no
 The asterisk was chosen over alternatives for several reasons:
 
 - **Brevity**: A single character, versus a keyword like `primary` or `pk`
+
 - **Visual distinctiveness**: The `*` stands out at the beginning of a line, making primary keys easy to spot when scanning a file
+
 - **Convention**: ER diagrams and many database design tools use `*` or a similar marker
+
 - **Composability**: Multiple attributes can be marked as primary key for composite keys — simply prefix each with `*`
 
 The alternative of a `primary key` keyword was rejected because it would require either a keyword pair (complicating the grammar) or a special attribute modifier syntax. The `*` prefix keeps the grammar simple: an attribute is optionally preceded by `*`, and that is all.
@@ -312,7 +319,9 @@ This constraint set matches MERISE's definition exactly. Some ER modelling tools
 MSD enforces three uniqueness rules:
 
 1. **Entity names must be unique**: Defining two entities named `Student` is an error.
+
 2. **Association names must be unique**: Defining two associations named `enrolled_in` is an error.
+
 3. **No entity-association name conflicts**: An entity and an association cannot share a name. If entity `Course` exists, association `Course` is an error.
 
 These rules exist because names serve as identifiers in link statements. If two entities shared the name `Student`, a link referencing `Student` would be ambiguous. The cross-category uniqueness rule (rule 3) exists for the same reason and also because entity and association names both become table names in the generated SQL.

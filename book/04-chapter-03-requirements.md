@@ -16,7 +16,9 @@ A DSL exists to serve a domain. If you misunderstand the domain, the language wi
 
 - You invent syntax that *looks nice* but does not map to real domain concepts.
 - You omit constructs that practitioners need daily.
+
 - You conflate distinct concepts because you did not realise they were different.
+
 - You impose constraints that make no sense to domain experts.
 
 The purpose of domain analysis is to build a **domain model** — a structured understanding of the concepts, relationships, and rules that govern the domain. This model becomes the blueprint for every design decision in your language.
@@ -38,8 +40,10 @@ The rule is simple: **understand first, design second**.
 If you have access to domain experts, involve them from the start. They will identify concepts you would miss, correct your misunderstandings, and validate your domain model. The collaboration typically follows this pattern:
 
 1. **Interview**: Ask domain experts to describe their work, their vocabulary, and their pain points.
+
 2. **Model**: Build a draft domain model and present it back to them.
 3. **Refine**: Iterate until the model accurately reflects their understanding.
+
 4. **Validate**: Show prototype syntax and ask whether it expresses their concepts naturally.
 
 If you are working alone — perhaps because you *are* the domain expert — you must be especially disciplined. Document your assumptions explicitly. Search for edge cases. Study existing tools and standards in the domain. Your own familiarity can blind you to implicit knowledge that a language must make explicit.
@@ -49,7 +53,9 @@ If you are working alone — perhaps because you *are* the domain expert — you
 A domain model captures three things:
 
 - **Concepts**: The nouns of the domain — the things that exist and that users reason about.
+
 - **Operations**: The verbs — the actions performed on or between concepts.
+
 - **Constraints**: The rules that determine which combinations of concepts and operations are valid.
 
 Every element of your eventual language — its keywords, its syntax patterns, its validation rules — will trace back to one of these three categories. The domain model is not a preliminary step you do once and forget; it is the reference document you consult throughout the design and implementation process.
@@ -75,6 +81,7 @@ The nouns are: entity, attribute, association, link, cardinality, model, instanc
 Verbs tell you what users *do* with the domain concepts. They may become language constructs (if the user expresses them in the DSL) or tooling operations (if they happen outside the language). Common verbs include:
 
 - **Define** / **declare**: Creating new instances of concepts (defining an entity, declaring an attribute).
+
 - **Connect** / **link**: Establishing relationships between concepts.
 - **Transform**: Converting from one representation to another (MCD to MLD).
 - **Validate**: Checking that a model satisfies domain rules.
@@ -157,8 +164,11 @@ For the MERISE domain, the key constraints include:
 Not every constraint should be enforced by the language grammar. There is a spectrum:
 
 - **Lexical constraints** are enforced by the tokeniser. Example: an identifier must start with a letter.
+
 - **Syntactic constraints** are enforced by the parser. Example: an entity block must contain braces.
+
 - **Semantic constraints** are enforced by a post-parsing validation pass. Example: entity names must be unique.
+
 - **Tooling constraints** are enforced by the environment. Example: a model should have at least one entity (but an empty file is still syntactically valid).
 
 The general principle is: **push constraints as early as possible in the pipeline, but not earlier than they naturally belong**. Cardinalities being from a fixed set is naturally a lexical or syntactic constraint (the parser can reject invalid values). Entity name uniqueness is naturally a semantic constraint (the parser sees each entity independently). A model having no orphan entities is naturally a tooling-level warning.
@@ -174,8 +184,11 @@ The general principle is: **push constraints as early as possible in the pipelin
 A language is only as good as its fit for the people who use it. Before designing syntax, identify your **user personas** — the distinct categories of people who will interact with the language. For each persona, understand:
 
 - Their technical background (programmer, domain expert, student, or mixed).
+
 - Their familiarity with text-based languages (comfortable with code, or prefer GUIs).
+
 - Their goals (authoring new models, reviewing existing ones, automating tasks).
+
 - Their tolerance for complexity (will they learn a full syntax, or do they need simplicity?).
 
 ### What Tasks Will They Perform?
@@ -185,7 +198,9 @@ Users rarely interact with a DSL in only one way. Typical tasks include:
 - **Authoring**: Writing new models from scratch.
 - **Editing**: Modifying existing models.
 - **Reviewing**: Reading and understanding models written by others.
+
 - **Transforming**: Converting models to other formats (SQL, diagrams, documentation).
+
 - **Validating**: Checking models for correctness.
 - **Versioning**: Tracking changes to models over time (version control).
 
@@ -226,8 +241,11 @@ Once you have a domain model and an understanding of your users, you can systema
 The mapping follows a consistent pattern:
 
 - **Each noun** in the domain vocabulary becomes a **keyword** or **construct type** in the language.
+
 - **Each relationship** between concepts becomes a **syntax pattern** — typically nesting, referencing, or sequencing.
+
 - **Each constraint** becomes a **validation rule** — enforced at the lexical, syntactic, or semantic level.
+
 - **Each adjective** becomes a **modifier**, **annotation**, or **parameter** in the syntax.
 
 ### Design Table: Domain Concept to Language Construct
@@ -317,9 +335,13 @@ Before designing a new DSL, it is essential to survey existing tools — both to
 The gap that motivated MSD was clear: Merisio needed a **text-based authoring format** that would enable:
 
 - **Version control**: MCD models stored as plain text files in Git repositories, with meaningful diffs.
+
 - **Code review**: Teachers and team leads reviewing model changes in pull requests.
+
 - **Automation**: CI/CD pipelines that validate models, generate SQL, and export diagrams without launching the GUI.
+
 - **Batch processing**: The `merisio-cli` tool processing multiple model files from the command line.
+
 - **Round-trip fidelity**: A text file imported into Merisio's GUI, edited visually, and exported back to text should preserve the model faithfully.
 
 This is the problem that MSD — the Merisio Schema Definition language — was designed to solve. In Chapter 7, we will design MSD in full, applying the lexical, syntactic, and semantic design principles from Chapters 4 through 6. The domain analysis in this chapter provides the foundation for that design.

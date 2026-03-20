@@ -32,13 +32,17 @@ The parser produces two entities, one association, and two links. But where shou
 This means the tool must compute positions automatically. The requirements for a good automatic layout are:
 
 1. **Proximity**: connected elements should be near each other. `Student` and `Course` are both linked to `Enrol`, so all three should form a visual cluster.
+
 2. **No overlaps**: nodes must not sit on top of one another. Overlapping entities make labels unreadable and the diagram useless.
+
 3. **Visual balance**: the diagram should be roughly centred and evenly distributed, not bunched into one corner.
+
 4. **Determinism**: the same input must always produce the same output. A user who runs the MSD compiler twice on the same file should get identical coordinates both times.
 
 This problem is not unique to MSD. Any DSL that generates visual output faces it:
 
 - **GraphViz** (DOT language) — arranges arbitrary directed and undirected graphs
+
 - **Network topology DSLs** — position routers, switches, and links
 - **State machine DSLs** — arrange states and transitions
 - **Entity-relationship DSLs** — position entities and relationships (our case)
@@ -52,6 +56,7 @@ The field of automatic graph drawing has been studied extensively since the 1960
 Force-directed algorithms model a graph as a physical system. The analogy is intuitive: imagine each node as a small charged particle, and each edge as a spring connecting two particles.
 
 - **Charged particles repel each other.** This is the force that prevents overlap and clutter. Every pair of nodes pushes apart, regardless of whether they are connected. Without repulsion, unrelated nodes would drift together and overlap.
+
 - **Springs attract connected nodes.** This is the force that keeps related elements close. An edge between two nodes acts like a spring — it pulls them together if they drift too far apart, and the further apart they are, the stronger the pull.
 
 The algorithm simulates this physical system over many iterations. At each step, it computes the net force on every node (the sum of all repulsive and attractive forces acting on it), then moves each node a small distance in the direction of its net force. Over time, the system reaches **equilibrium** — a state where the forces approximately balance and nodes stop moving. The resulting positions form the layout.

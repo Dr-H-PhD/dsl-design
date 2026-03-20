@@ -77,12 +77,16 @@ keyword         = "project" | "entity" | "association" | "link" ;
 The following constraints are not expressed in the grammar but are enforced by the parser and builder:
 
 1. The `project` block may appear at most once
+
 2. `type_expr` IDENTIFIER must be one of: `INT`, `BIGINT`, `SMALLINT`, `VARCHAR`, `CHAR`, `TEXT`, `BOOLEAN`, `DATE`, `TIME`, `TIMESTAMP`, `DECIMAL`, `FLOAT`, `DOUBLE`
+
 3. Size parameter `(INTEGER)` is only meaningful for `VARCHAR`, `CHAR`, `DECIMAL`
+
 4. `card_min` must be `"0"` or `"1"`
 5. `card_max` must be `"1"` or `"N"`
 6. Entity names must be unique
 7. Association names must be unique and must not conflict with entity names
+
 8. Entity and association names in link statements must reference declared entities or associations
 
 ## A.5 Grammar Properties
@@ -90,7 +94,9 @@ The following constraints are not expressed in the grammar but are enforced by t
 The MSD grammar is:
 
 - **LL(1)** — each production can be determined by looking at one token of lookahead
+
 - **Context-free** — with the exception of the `STRING_VALUE` token in `project {}` blocks, which is context-sensitive at the lexical level
+
 - **Unambiguous** — every valid input has exactly one parse tree
 
 The LL(1) property makes the grammar ideal for recursive descent parsing. No backtracking is ever needed.

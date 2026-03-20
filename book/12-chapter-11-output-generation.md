@@ -11,6 +11,7 @@ A parser extracts structure from text. A semantic analyser validates that struct
 After parsing and semantic analysis, the pipeline holds a validated intermediate representation — a structured, in-memory model of everything the user declared. The output generator's job is to convert this model into the target format. Different DSLs have different targets:
 
 - **SQL DSLs** generate DDL statements (`CREATE TABLE`, `ALTER TABLE`, `ADD CONSTRAINT`).
+
 - **SASS/LESS** generate CSS stylesheets.
 - **Terraform HCL** generates execution plans and API calls to cloud providers.
 - **MSD** generates `.merisio` JSON files that the Merisio application can load.
@@ -20,7 +21,9 @@ Despite these differences, the underlying principle is the same: **the output ge
 This separation of concerns is not merely aesthetic. It has practical consequences:
 
 - **Testability**: the model can be inspected and tested independently of its serialised form.
+
 - **Multiple outputs**: the same model can be serialised to JSON, SQL, SVG, or any other format by swapping the output generator.
+
 - **Stability**: changes to the output format do not require changes to the parser or semantic analyser.
 
 In MSD, the builder (Chapter 10) validates the parse result and produces a standard `Project` object. The output generator then calls `FileIO.save_project()` to write JSON. The builder never knows or cares what format the output will take. The serialiser never knows or cares how the model was constructed.
@@ -36,7 +39,9 @@ Every element in a Merisio project — every entity, every association, every li
 MSD uses UUIDs (Universally Unique Identifiers) rather than sequential integers. The choice is deliberate:
 
 - **No central counter needed.** Sequential IDs require a shared counter — who assigns ID 1? ID 2? With UUIDs, every object generates its own identifier independently.
+
 - **Merge-friendly.** If two users create models independently and merge them, sequential IDs would collide. UUIDs are statistically unique across all models, on all machines, for all time.
+
 - **Stable across re-imports.** When a `.merisio` file is saved and reloaded, the IDs are preserved exactly. The `from_dict()` class methods on `Entity`, `Association`, and `Link` all restore the original UUID from the JSON data.
 
 ### How UUIDs Appear
@@ -65,6 +70,7 @@ UUIDs are random. Re-parsing the same MSD source file produces different UUIDs e
 This is acceptable for two reasons:
 
 1. **The `.merisio` file preserves IDs once saved.** After the first save, the JSON contains explicit IDs. Reloading and re-saving preserves them.
+
 2. **The semantic content is identical.** The entity names, attributes, links, and cardinalities are the same — only the internal identifiers differ. For version control purposes, the `.msd` source file is the canonical artefact, not the generated `.merisio` output.
 
 > **Note:** If deterministic output were required — for example, if the generated file needed to be committed to version control — the UUIDs could be derived from a hash of the entity name plus a project-level seed. MSD deliberately avoids this complexity because the `.msd` source, not the `.merisio` output, is the version-controlled artefact.
@@ -90,7 +96,9 @@ if parse_result.metadata:
 Several details are worth noting:
 
 - **Metadata is optional.** If the MSD file contains no `project {}` block, `parse_result.metadata` is `None`, and the `Project` retains its defaults (`"Untitled Project"` for the name, empty strings for author and description).
+
 - **Empty values are not applied.** If the user writes `name:` with no value, the parsed metadata will have `name = ""`. The `if m.name:` guard prevents this empty string from overwriting the default. This preserves the principle of least surprise: omitting a field and leaving it blank have the same effect.
+
 - **The builder owns the application logic.** The output generator does not need to understand metadata semantics — it simply serialises whatever the `Project` object contains.
 
 This pattern — *if present and non-empty, apply; otherwise, preserve defaults* — is common across DSL output pipelines. It keeps the metadata system additive: users can provide as much or as little metadata as they wish, and the output is always valid.
@@ -104,8 +112,11 @@ MSD's target output is the `.merisio` file format — a JSON document that the M
 ### Why JSON?
 
 - **Universal.** Every programming language has a JSON parser. The `.merisio` file can be read by Python, Go, JavaScript, or any other language.
+
 - **Human-readable.** A developer can open a `.merisio` file in a text editor and inspect its contents. This is invaluable for debugging.
+
 - **Version-controllable.** JSON diffs are meaningful in Git. Adding an entity or changing a cardinality produces a clean, reviewable diff.
+
 - **Schema-flexible.** New fields can be added without breaking older readers (they simply ignore unknown keys). This supports forward compatibility as Merisio evolves.
 
 ### The .merisio Structure
@@ -180,8 +191,11 @@ For MSD, the round-trip is:
 The round-trip preserves all *semantic* content:
 
 - **Entity names** and their attributes (names, data types, sizes, primary key status).
+
 - **Association names** and their carrying attributes.
+
 - **Link connections** (which entity connects to which association) and their cardinalities.
+
 - **Metadata** (project name, author, description).
 - **Positions** (x, y coordinates from auto-layout).
 
@@ -190,8 +204,11 @@ The round-trip preserves all *semantic* content:
 Certain source-level concerns are deliberately lost:
 
 - **Comments.** MSD supports `#` and `//` comments, but these are discarded by the lexer and never reach the model. The `.merisio` format has no comment storage.
+
 - **Whitespace and formatting.** The original indentation, blank lines, and spacing are not part of the semantic model.
+
 - **Original ordering.** Entities may appear in a different order in the JSON than they did in the MSD source, because the `Project` stores them in a dictionary keyed by UUID.
+
 - **Source location information.** Line numbers and column offsets exist only during parsing and building — they are not serialised.
 
 These losses are acceptable because the `.msd` source file remains available. The `.merisio` output is a *derived artefact*, not the source of truth. If the user needs comments or specific ordering, they maintain the `.msd` file and regenerate the `.merisio` as needed.

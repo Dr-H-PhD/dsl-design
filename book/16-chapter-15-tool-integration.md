@@ -91,7 +91,9 @@ def cmd_parse(args):
 Key design choices:
 
 - **Lazy imports**: `MSDParser` and `MSDProjectBuilder` are imported inside the function, not at module level. This avoids loading MSD modules when the user runs unrelated commands like `info` or `sql`.
-- **Default output path**: if `-o` is not specified, the output file is the input filename with a `.merisio` extension (`school.msd` → `school.merisio`).
+
+- **Default output path**: if `-o` is not specified, the output file is the input filename with a `.merisio` extension (`school.msd` $\rightarrow$ `school.merisio`).
+
 - **All errors printed**: even when there are fatal errors, all warnings are also shown so the user sees everything.
 
 ## 15.2 GUI Integration
@@ -219,13 +221,15 @@ merisio-cli /tmp/schema.merisio sql -o schema.sql
 MSD files are plain text, which enables:
 
 - **Clean diffs**: adding an attribute is a one-line diff, not a binary blob change
+
 - **Code review**: reviewers can read and comment on model changes in pull requests
+
 - **CI validation**: automated parsing catches errors before merge
 - **Blame**: `git blame` shows who added each entity and when
 
 > **Info:** This is perhaps the strongest argument for text-based DSLs. A graphical-only tool cannot participate in the code review workflow that modern software teams depend on. A text DSL turns domain models into reviewable, versionable artefacts.
 
-## 15.5 The Integration Pattern: Library → CLI Wrapper → GUI Wrapper
+## 15.5 The Integration Pattern: Library $\rightarrow$ CLI Wrapper $\rightarrow$ GUI Wrapper
 
 The most robust integration architecture has three layers:
 
@@ -258,7 +262,9 @@ Read source → MSDParser().parse() → MSDProjectBuilder().build() → Handle e
 The library does not know about files, terminals, or windows. This separation provides:
 
 - **Testability**: test the library directly with string input, no I/O needed
+
 - **Reusability**: new wrappers (web API, language server, IDE plugin) are trivial to build
+
 - **Consistency**: every wrapper uses the same pipeline, so behaviour is identical
 
 ## 15.6 MSD: The `parse` Command and File > Import MSD

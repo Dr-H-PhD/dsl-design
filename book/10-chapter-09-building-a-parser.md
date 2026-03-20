@@ -94,9 +94,13 @@ The loop repeatedly calls `_parse_top_level()` until every token has been consum
 Recursive descent is the most widely used technique for hand-written parsers. GCC, Clang, the Go compiler, the V8 JavaScript engine, and the Rust compiler all use variants of recursive descent. The reasons are practical:
 
 1. **Simplicity.** The code reads like a direct translation of the grammar. Anyone who understands the grammar can read the parser, and vice versa.
+
 2. **Control.** Every parsing decision is explicit code. You can add context-sensitive logic, custom error messages, and recovery strategies exactly where they are needed.
+
 3. **No dependencies.** The parser is pure application code. There is no parser generator tool to learn, no build step to maintain, and no generated code to debug.
+
 4. **Excellent error messages.** Because you control every decision point, you can craft error messages that explain exactly what the parser expected and what it found.
+
 5. **Debuggability.** You can set breakpoints, step through the parser, and inspect the token stream at any point. Try doing that with a parser table.
 
 > **Tip:** If your grammar is LL(1) — meaning each decision can be made by looking at a single token ahead — recursive descent is almost certainly the right choice. MSD's grammar is LL(1) by design: the first token of any top-level declaration (`entity`, `association`, `link`, `project`) immediately identifies the construct type.
@@ -112,8 +116,11 @@ A natural question arises: why not construct the final model objects — `Entity
 The answer involves separation of concerns. The parser's job is to recognise syntactic structure and report syntax errors. The builder's job (Chapter 10) is to resolve references, check semantic constraints, generate UUIDs, and construct the final model. Mixing these responsibilities creates several problems:
 
 - **UUID generation during parsing.** Final model objects in Merisio carry UUIDs. Generating UUIDs during parsing means that a syntax error in one entity could leave orphaned UUIDs in the model. The intermediate representation avoids this: no UUIDs exist until the entire parse succeeds.
+
 - **Dependency on the model layer.** If the parser imports and constructs `Entity` objects directly, it becomes tightly coupled to the model layer. Changes to the model (adding fields, changing constructors) break the parser. The intermediate dataclasses are simple, stable, and owned by the parser module.
+
 - **Error recovery.** When the parser encounters an error and skips tokens, a partially constructed model object is in an inconsistent state. An intermediate dataclass can safely represent partial data — it is just a container of strings and integers, with no invariants to violate.
+
 - **Testability.** Testing the parser in isolation is straightforward when it produces simple dataclasses. You do not need to set up a full project model, mock UUID generators, or wire up layout algorithms just to verify that an entity block parses correctly.
 
 ### The Parsed Dataclasses
@@ -537,7 +544,9 @@ The MSD parser uses **panic-mode recovery**, the simplest strategy that produces
 1. When the parser encounters an unexpected token, it records an error.
 2. It raises a lightweight `_ParsePanic` exception to unwind the call stack.
 3. A handler at a higher level catches the exception.
+
 4. The handler skips tokens until it reaches a **synchronisation point** — a position where parsing can safely resume.
+
 5. Parsing continues from the synchronisation point.
 
 The `_ParsePanic` exception is not a real error in the Python exception sense. It is a control flow mechanism — a way to jump from a deeply nested parsing method back to a recovery handler without threading return codes through every intermediate function:
@@ -612,11 +621,17 @@ entity Student {
 `BLOB` is not a recognised MSD data type. Here is what happens:
 
 1. The parser enters `_parse_entity_block()` and successfully parses the entity name and opening brace.
+
 2. It parses `*student_id: INT` successfully.
+
 3. It enters `_parse_attribute()` for `email: BLOB`. The `_parse_type_expr()` method finds that `BLOB` is not in `DATA_TYPES`, records an error, and raises `_ParsePanic`.
+
 4. The `except _ParsePanic` handler in `_parse_entity_block()` calls `_recover_to_brace_or_keyword()`.
+
 5. The recovery method advances through the token stream. It finds `name` (an `IDENTIFIER`) followed by `:` (a `COLON`) — a synchronisation point. It stops.
+
 6. The `while` loop in `_parse_entity_block()` continues. It parses `name: VARCHAR(100)` successfully.
+
 7. The closing brace is consumed and the entity is appended to the result.
 
 The final `ParseResult` contains one entity (`Student`) with two attributes (`student_id` and `name`) and one error (unknown data type `BLOB` on line 3). The `email` attribute is lost — it could not be parsed — but everything else was recovered.
@@ -676,7 +691,9 @@ The parser skips newlines and peeks at token #1: `ENTITY`. It dispatches to `_pa
 **Step 2: `_parse_entity_block()` begins.**
 
 - `_expect(TokenType.ENTITY)` consumes token #1 (`entity`).
+
 - `_expect(TokenType.IDENTIFIER)` consumes token #2 (`Student`). The entity name is `"Student"`.
+
 - `_skip_newlines()` skips any intervening newlines.
 - `_expect(TokenType.LBRACE)` consumes token #3 (`{`).
 - Creates `ParsedEntity(name="Student", line=1, column=8)`.
@@ -684,30 +701,30 @@ The parser skips newlines and peeks at token #1: `ENTITY`. It dispatches to `_pa
 
 **Step 3: First attribute — `*student_id: INT`.**
 
-- `_check(TokenType.RBRACE)` → `False`. Loop continues.
+- `_check(TokenType.RBRACE)` $\rightarrow$ `False`. Loop continues.
 - `_parse_attribute()` is called.
-  - `_check(TokenType.STAR)` → `True`. Advance consumes token #4. `is_pk = True`.
+  - `_check(TokenType.STAR)` $\rightarrow$ `True`. Advance consumes token #4. `is_pk = True`.
   - `_expect(TokenType.IDENTIFIER)` consumes token #5 (`student_id`).
   - `_expect(TokenType.COLON)` consumes token #6 (`:`).
   - `_parse_type_expr()` is called.
     - `_expect(TokenType.IDENTIFIER)` consumes token #7 (`INT`). `type_name = "INT"`.
     - `"INT"` is in `DATA_TYPES`. No error.
-    - `_check(TokenType.LPAREN)` → `False`. No size parameter.
+    - `_check(TokenType.LPAREN)` $\rightarrow$ `False`. No size parameter.
     - Returns `("INT", None)`.
   - Returns `ParsedAttribute(name="student_id", data_type="INT", is_primary_key=True, ...)`.
 - Attribute appended to entity.
 
 **Step 4: Second attribute — `name: VARCHAR(100)`.**
 
-- `_check(TokenType.RBRACE)` → `False`. Loop continues.
+- `_check(TokenType.RBRACE)` $\rightarrow$ `False`. Loop continues.
 - `_parse_attribute()` is called.
-  - `_check(TokenType.STAR)` → `False`. `is_pk = False`.
+  - `_check(TokenType.STAR)` $\rightarrow$ `False`. `is_pk = False`.
   - `_expect(TokenType.IDENTIFIER)` consumes token #8 (`name`).
   - `_expect(TokenType.COLON)` consumes token #9 (`:`).
   - `_parse_type_expr()` is called.
     - `_expect(TokenType.IDENTIFIER)` consumes token #10 (`VARCHAR`). `type_name = "VARCHAR"`.
     - `"VARCHAR"` is in `DATA_TYPES`. No error.
-    - `_check(TokenType.LPAREN)` → `True`. Advance consumes token #11 (`(`).
+    - `_check(TokenType.LPAREN)` $\rightarrow$ `True`. Advance consumes token #11 (`(`).
     - `_expect(TokenType.INTEGER)` consumes token #12 (`100`). `size = 100`.
     - `_expect(TokenType.RPAREN)` consumes token #13 (`)`).
     - `"VARCHAR"` is in `SIZED_TYPES`. No warning.
@@ -718,7 +735,7 @@ The parser skips newlines and peeks at token #1: `ENTITY`. It dispatches to `_pa
 **Step 5: End of entity block.**
 
 - `_skip_newlines()` skips any newlines.
-- `_check(TokenType.RBRACE)` → `True`. Loop exits.
+- `_check(TokenType.RBRACE)` $\rightarrow$ `True`. Loop exits.
 - `_expect(TokenType.RBRACE)` consumes token #14 (`}`).
 - `ParsedEntity` with two attributes appended to `self._result.entities`.
 

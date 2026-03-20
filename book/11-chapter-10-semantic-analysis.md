@@ -285,7 +285,9 @@ def _levenshtein(a: str, b: str) -> int:
 The algorithm works as follows:
 
 - `prev` holds the previous row of the DP matrix. Initially, `prev = [0, 1, 2, ..., len(b)]`, representing the cost of transforming an empty prefix of `a` into each prefix of `b` (all insertions).
+
 - For each character `ca` in `a`, we build a new row `curr`. The first element is `i + 1` (deleting `i + 1` characters from `a` to get an empty string).
+
 - For each character `cb` in `b`, we compute the minimum of three operations:
   - `curr[j] + 1`: insert `cb` (cost from the cell to the left, plus one)
   - `prev[j + 1] + 1`: delete `ca` (cost from the cell above, plus one)
@@ -314,7 +316,9 @@ def _suggest(name: str, candidates: list, max_distance: int = 3) -> Optional[str
 Several design decisions are worth noting:
 
 - **Case-insensitive comparison.** The function compares `name.lower()` against `c.lower()`. This catches cases where the user wrote `student` instead of `Student` — a distance of 0 in case-insensitive mode, but distance 1 in case-sensitive mode.
+
 - **Maximum distance of 3.** Beyond 3 edits, the suggestion is unlikely to be helpful. A distance of 4 between two short names (say, `"Foo"` and `"Barr"`) is meaningless. The threshold of 3 is a practical compromise: it catches common typos (transpositions, missing letters, extra letters) without suggesting wildly different names.
+
 - **Returns the original casing.** Although comparison is case-insensitive, the function returns `c` (the candidate as it was registered), not the lowercased version. The suggestion shows the correct name exactly as it was defined.
 
 ### Worked example
@@ -336,6 +340,7 @@ link Tourits (1,N) guided_tour
 The builder processes the link, looks up `"Tourits"` in `entity_names`, and finds no match. It then calls `_suggest("Tourits", ["Tourist"])`:
 
 - `_levenshtein("tourits", "tourist")` = 2 (two substitutions at positions 6 and 7)
+
 - 2 <= 3 (the maximum distance), so `"Tourist"` is returned
 
 The error message becomes:
@@ -357,6 +362,7 @@ Not all problems are equal. Some make the model definitively broken — a link r
 MSD distinguishes between two severity levels:
 
 - **Error**: the model is definitively wrong. The problem must be fixed before the model can be considered valid. Examples: duplicate names, unknown references, cross-namespace conflicts.
+
 - **Warning**: the model is suspicious but not broken. The user should review the issue but may choose to ignore it. Example: an entity without a primary key.
 
 ### Where to draw the line
