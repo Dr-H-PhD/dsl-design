@@ -109,3 +109,7 @@
   \fancyfoot[C]{\thepage}
   \fancyfoot[R]{\small www.achrafsoltani.com}
 }
+
+% Prevent justified text gaps in lists with long inline code
+\AtBeginEnvironment{itemize}{\raggedright}
+\AtBeginEnvironment{enumerate}{\raggedright}
