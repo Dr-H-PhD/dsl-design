@@ -1,3 +1,7 @@
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
@@ -113,3 +117,16 @@
 % Prevent justified text gaps in lists with long inline code
 \AtBeginEnvironment{itemize}{\raggedright}
 \AtBeginEnvironment{enumerate}{\raggedright}
+
+% ── Table styling ──
+\definecolor{tableheadbg}{RGB}{41, 128, 185}
+\definecolor{tableheadfg}{RGB}{255, 255, 255}
+\definecolor{tablerowalt}{RGB}{241, 245, 249}
+\definecolor{tablerule}{RGB}{41, 128, 185}
+\setlength{\heavyrulewidth}{1.2pt}
+\setlength{\lightrulewidth}{0.5pt}
+\setlength{\aboverulesep}{0.6ex}
+\setlength{\belowrulesep}{0.6ex}
+\arrayrulecolor{tablerule}
+\AtBeginEnvironment{longtable}{\rowcolors{2}{tablerowalt}{white}}
+\renewcommand{\arraystretch}{1.4}

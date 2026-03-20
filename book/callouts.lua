@@ -56,3 +56,24 @@ function BlockQuote(el)
   end
   return el
 end
+
+-- Style table header cells: bold + coloured text
+function Table(tbl)
+  if tbl.head and tbl.head.rows and #tbl.head.rows > 0 then
+    for _, row in ipairs(tbl.head.rows) do
+      for _, cell in ipairs(row.cells) do
+        for _, block in ipairs(cell.contents) do
+          if block.t == "Para" or block.t == "Plain" then
+            local old = block.content
+            block.content = pandoc.List({
+              pandoc.RawInline("latex", "{\\bfseries\\color{chapterblue} "),
+            })
+            block.content:extend(old)
+            block.content:insert(pandoc.RawInline("latex", "}"))
+          end
+        end
+      end
+    end
+  end
+  return tbl
+end
