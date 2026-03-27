@@ -51,6 +51,8 @@ When no filename is provided (e.g. in tests), `<string>` is used as a placeholde
 
 > **Tip:** Use a structured error object rather than raising exceptions for user-facing errors. A list of error objects supports multiple errors, mixed severities, and unified reporting — none of which work well with exceptions.
 
+> **Programmer:** Good error messages are a DSL's user experience, and Go's error handling philosophy provides an excellent foundation. In Go, `fmt.Errorf("line %d: unknown type %q", line, typeName)` produces contextual error messages with format verbs that include the exact values causing the problem. Go 1.13's `errors.Is` and `errors.As` functions enable typed error checking, so callers can distinguish between a parse error and a semantic error programmatically. For DSL implementations in Go, define a `Diagnostic` struct with `Pos`, `Severity`, `Message`, and `Suggestions` fields, collect diagnostics into a `[]Diagnostic` slice, and return them alongside the result. This mirrors how `gopls` (Go's language server) reports diagnostics to IDEs, enabling features like inline error squiggles and quick-fix suggestions.
+
 ## 13.2 Error vs Warning: When to Stop vs When to Continue
 
 The distinction between errors and warnings has real consequences for tooling:
@@ -236,6 +238,8 @@ When an error occurs, the parser does not discard everything:
 - A link references an unknown entity $\rightarrow$ The link is skipped, but all other links are processed
 
 > **Warning:** Panic-mode recovery can occasionally produce **cascade errors** — false errors triggered by the recovery process rather than by genuine mistakes. For example, if the parser skips past a closing brace during recovery, it might misinterpret the next construct. In practice, MSD's grammar is simple enough that cascading is rare, but always review the first error before addressing subsequent ones.
+
+> **Programmer:** Error recovery strategies in DSLs directly parallel techniques used in production compilers and IDE tooling. Go's parser recovers from syntax errors by scanning forward to the next statement boundary (a semicolon or a keyword like `func`, `type`, or `var`), which is exactly the synchronisation-point approach MSD uses with top-level keywords. For IDE integration via the Language Server Protocol (LSP), error recovery is essential -- the language server must produce a partial AST even when the file contains errors, because the user is actively typing and the file is almost always in an invalid state. If you plan to build LSP support for your DSL, design your parser's recovery strategy from the start, ensuring it always produces a usable partial result rather than an empty failure.
 
 ## 13.6 Error Message Quality
 

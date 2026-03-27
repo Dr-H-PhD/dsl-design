@@ -87,6 +87,8 @@ An informal specification such as "an entity has a name and some attributes insi
 
 > **Tip:** Write your EBNF grammar *before* you write your parser. The grammar is your blueprint. Changing a grammar rule is far cheaper than refactoring a parser.
 
+> **Programmer:** EBNF notation is to parser implementation what an interface definition is to Go code. Just as a Go `interface` specifies the contract a type must satisfy without dictating the implementation, an EBNF grammar specifies which token sequences are valid without dictating how the parser processes them. Go's own grammar is published formally in the language specification, and the `go/parser` package is a direct translation of that grammar into recursive descent code. When you design your DSL, write the EBNF first and treat it as a binding contract: every production rule becomes a function, every alternative becomes a `switch` or `if` block, and every repetition becomes a `for` loop. This mechanical correspondence is what makes recursive descent parsers so maintainable.
+
 ---
 
 ## 5.3 LL(1) Grammars and Why They Matter
@@ -194,6 +196,8 @@ stmt = "if" expr "then" stmt [ "else" stmt ] ;
 The shared prefix `"if" expr "then" stmt` is factored out, and the `"else"` clause becomes optional. The parser consumes the common prefix, then checks whether an `"else"` follows.
 
 > **Note:** MSD's grammar is naturally LL(1) without any transformations. Each top-level construct starts with a unique keyword (`project`, `entity`, `association`, `link`), and within blocks, the structure is regular enough that one token of lookahead always suffices. This is not an accident — it is a deliberate design choice that simplifies the parser enormously.
+
+> **Programmer:** Go's grammar is deliberately LL(1) for the same reason MSD's is: fast, predictable parsing with no backtracking. This is why Go compiles faster than almost any other compiled language at scale. The Go specification explicitly avoids ambiguous constructs -- there is no ternary operator, no implicit type conversions, and statement-ending semicolons are inserted automatically by the lexer so that the parser never has to guess where a statement ends. If you are designing a DSL in Go, you can leverage Go's own parsing infrastructure directly: the `go/scanner` package handles LL(1) token scanning with automatic semicolon insertion, and its source code is a concise, readable example of how to build a production-quality lexer for an LL(1) grammar.
 
 ---
 

@@ -56,6 +56,8 @@ def test_invalid_cardinality_min(self, parser):
 
 > **Tip:** Aim for at least one positive test and one negative test per language feature. The negative tests often catch more bugs than the positive ones, because error paths are where implementations tend to be weakest.
 
+> **Programmer:** Go's testing infrastructure is exceptionally well suited for DSL testing. The `testdata/` directory convention provides a natural home for golden files -- expected output snapshots that your tests compare against actual output. Table-driven tests, Go's signature testing pattern, let you cover all valid token types, all cardinality combinations, and all error cases in a single test function with a `[]struct` slice. Go 1.18's fuzzing support via `testing.F` is particularly valuable for DSL parsers: `f.Fuzz(func(t *testing.T, input string) { ... })` generates random byte strings and feeds them to your parser, finding crash-inducing inputs that manual tests would never cover. Run `go test -fuzz=FuzzParse -fuzztime=30s` regularly to discover edge cases in your lexer and parser.
+
 ### Test the Contract, Not the Implementation
 
 Tests verify observable behaviour, not internal state:
@@ -157,6 +159,8 @@ entity B {
 This test exercises attribute-level panic-mode recovery. Entity A's invalid attribute triggers recovery, but Entity B is still parsed successfully.
 
 > **Note:** Error recovery tests are among the most valuable in a DSL test suite. They verify that a single mistake does not cascade into a flood of false errors, which is the most common complaint users have about compilers and linters.
+
+> **Programmer:** Golden file testing and `go test -cover` form the backbone of DSL test suites in Go. For golden file tests, store expected token streams and parse results as `.golden` files in `testdata/`, then use `os.ReadFile` to load them and compare against actual output. The `go test -update` flag pattern (checking `os.Getenv("UPDATE_GOLDEN")`) lets you regenerate golden files when the output format intentionally changes. For coverage, `go test -cover -coverprofile=coverage.out` followed by `go tool cover -html=coverage.out` produces a visual coverage report showing exactly which parser branches and error paths are exercised. Aim for 100% coverage of your lexer and parser -- these are pure functions with well-defined inputs and outputs, making exhaustive coverage practical rather than aspirational.
 
 ### Notable Test: All Cardinalities
 

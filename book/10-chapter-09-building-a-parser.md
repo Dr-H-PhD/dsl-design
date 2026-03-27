@@ -105,6 +105,8 @@ Recursive descent is the most widely used technique for hand-written parsers. GC
 
 > **Tip:** If your grammar is LL(1) — meaning each decision can be made by looking at a single token ahead — recursive descent is almost certainly the right choice. MSD's grammar is LL(1) by design: the first token of any top-level declaration (`entity`, `association`, `link`, `project`) immediately identifies the construct type.
 
+> **Programmer:** Recursive descent parsing is the technique used by the Go compiler itself, and `go/parser` is the canonical reference implementation. Each grammar rule in the Go specification -- `FunctionDecl`, `IfStmt`, `ForStmt` -- has a corresponding `parseXxx` method in the parser source code. The Go team chose recursive descent over parser generators like `yacc` precisely because it gives full control over error messages and recovery. For your DSL, the same principle applies: each grammar production becomes a Go function, each `|` alternative becomes an `if`/`switch`, each `{ }` repetition becomes a `for` loop, and each `[ ]` optional becomes an `if`. Pratt parsing (operator precedence parsing) extends this approach when your DSL has expressions with infix operators -- it handles precedence and associativity elegantly within the recursive descent framework.
+
 ---
 
 ## 9.2 Intermediate Representations
@@ -193,6 +195,8 @@ The `ParseResult` is the parser's single return value. It contains everything th
 The `has_errors` property provides a convenient check: it returns `True` only if at least one error has severity `"error"`. Warnings (such as a size parameter on a type that does not accept one) do not prevent the build from proceeding. This distinction between errors and warnings is crucial for usability — users should be able to see warnings without losing their entire parse.
 
 > **Note:** The `ParseResult` also carries lexer errors, forwarded from the tokenisation stage. This means the builder receives a single, unified error list from all stages of front-end processing. The user sees all problems at once, regardless of which stage detected them.
+
+> **Programmer:** The intermediate representation pattern used here -- parsing into lightweight data structures before building the final model -- is exactly how `go/parser` works in the Go toolchain. The `go/parser` package produces an `ast.File` containing `ast.GenDecl`, `ast.FuncDecl`, and other AST node types. These are simple structs with position information and string fields, not the resolved type-checked objects that `go/types` later produces. This separation lets you test parsing independently of semantic analysis, swap in different backends (code generation, linting, formatting), and recover gracefully from errors. In Go, your intermediate types would be plain structs with exported fields, and the `ParseResult` would be a struct with slices of those types -- no interfaces, no methods, just data.
 
 ---
 

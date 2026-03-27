@@ -21,6 +21,8 @@ function BlockQuote(el)
         box_type = "warningbox"
       elseif strong_content:match("^Caution:?$") then
         box_type = "warningbox"
+      elseif strong_content:match("^Programmer:?$") then
+        box_type = "programmerbox"
       end
 
       if box_type then

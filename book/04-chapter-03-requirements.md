@@ -116,6 +116,8 @@ Once you have extracted nouns, verbs, and adjectives, organise them into a **dom
 
 > **Tip:** Keep your domain vocabulary table alive throughout the project. As you learn more about the domain, add new terms. When you design syntax in later chapters, annotate each term with the language construct that expresses it. This table becomes the traceability link between the domain and the language.
 
+> **Programmer:** Requirements gathering for a DSL closely mirrors API design in Go. When you design a Go package, you start by defining the types and method signatures that callers will use -- effectively building the user's mental model before writing any implementation. The same discipline applies to DSLs: write ten realistic example files in your proposed syntax before implementing the lexer. This is the DSL equivalent of dogfooding. Go's own standard library follows this pattern rigorously; the `io.Reader` and `io.Writer` interfaces were designed around how users think about I/O, not around how the kernel implements it. Your DSL's keywords and constructs should similarly mirror how domain experts already think, not how your parser will process them.
+
 ---
 
 ## 3.3 Relationships and Constraints
@@ -174,6 +176,8 @@ Not every constraint should be enforced by the language grammar. There is a spec
 The general principle is: **push constraints as early as possible in the pipeline, but not earlier than they naturally belong**. Cardinalities being from a fixed set is naturally a lexical or syntactic constraint (the parser can reject invalid values). Entity name uniqueness is naturally a semantic constraint (the parser sees each entity independently). A model having no orphan entities is naturally a tooling-level warning.
 
 > **Warning:** Encoding too many constraints into the grammar makes the language rigid and the parser complex. Encoding too few makes invalid models silently accepted. Strike a balance: use the grammar for structural rules, and use semantic analysis for cross-referencing rules.
+
+> **Programmer:** Backward compatibility is a critical concern even for small DSLs, and Go's approach to compatibility offers a useful model. Go 1's compatibility promise guarantees that valid Go 1.0 code compiles with Go 1.22, and Go modules use explicit version declarations (`go 1.21` in `go.mod`) to manage feature availability. If your DSL gains adoption, users will have existing files that must continue to work when the tool is updated. Design your DSL with a version field from day one (as MSD does with its `project {}` block), and treat syntax changes as seriously as you would treat breaking API changes in a Go library. Adding a keyword is straightforward; removing or redefining one is a migration nightmare.
 
 ---
 

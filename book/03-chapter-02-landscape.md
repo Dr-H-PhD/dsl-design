@@ -101,6 +101,8 @@ CSS is purely declarative. There are no loops, no conditionals (ignoring media q
 
 > **Note:** Preprocessors like Sass and Less add variables, loops, and functions to CSS — effectively creating a *new* DSL on top of CSS. This is a common evolution: when a DSL lacks a needed feature, users build a meta-DSL rather than abandoning the original.
 
+> **Programmer:** The DSLs surveyed here have direct analogues in the Go ecosystem. Protocol Buffers (protobuf) is a serialisation DSL where you write `.proto` files and `protoc` generates Go structs and marshalling code -- a pattern nearly identical to how MSD generates output from its source files. Mermaid is a diagram DSL that compiles textual descriptions into SVGs, much as MSD compiles schema descriptions into visual layouts. GraphQL schema files define API contracts that tools like `gqlgen` translate into Go interfaces and resolvers. In each case, the DSL captures domain knowledge that would be tedious and error-prone to express in raw Go code, and a code generator bridges the gap.
+
 ---
 
 ## 2.2 Classification by Paradigm
@@ -191,6 +193,8 @@ Full DSLs take weeks to learn and months to master. They offer great power but r
 | **Examples** | Regex, cron, glob | SQL, CSS, MSD | TeX, Emacs Lisp, Vim script |
 
 > **Tip:** When designing a new DSL, start at the micro or medium level. It is far easier to add expressiveness later than to remove complexity from an overgrown language. Many successful DSLs began as micro-DSLs and grew into medium DSLs over decades (CSS is a prime example).
+
+> **Programmer:** The complexity tiers map directly to implementation effort in Go. A micro-DSL like cron expressions can be parsed with a single `strings.Split` call and a few `strconv.Atoi` checks -- no formal grammar needed. A medium DSL like HCL or MSD requires a proper lexer and recursive descent parser, typically 500--1500 lines of Go. A full DSL like Terraform's extended HCL (with `for_each`, conditionals, and functions) demands a type system, an evaluator, and thousands of lines of infrastructure. Go's `go/scanner` and `go/parser` packages themselves implement a medium-to-full DSL processor for the Go language, and studying their source code reveals exactly this progression from simple token scanning to complex semantic analysis.
 
 ---
 

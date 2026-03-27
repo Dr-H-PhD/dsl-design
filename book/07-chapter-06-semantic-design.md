@@ -102,6 +102,8 @@ MSD chose parse-time validation because its type set is closed and small. There 
 
 > **Tip:** If your DSL has a fixed set of types, validate them during parsing. If users can define their own types, you must defer validation to a later pass, because the type definition may appear after its first use.
 
+> **Programmer:** Go's `go/types` package is the gold standard for semantic analysis in a production language, and its architecture maps directly onto DSL semantic design. The `types.Config.Check()` function takes a parsed AST, resolves all identifiers, checks type compatibility, and returns a `types.Info` struct containing the resolved type of every expression. MSD's builder follows the same pattern at a smaller scale: it takes parsed data structures, resolves name references, checks uniqueness constraints, and produces a validated model. If you are building a DSL in Go and need to enforce semantic constraints, studying `go/types` will show you how to implement symbol tables, handle forward references via multi-pass resolution, and produce error messages that include source positions and suggestions.
+
 ## 6.3 Name Binding and Scoping Rules
 
 ### Names Are the Glue
@@ -238,6 +240,8 @@ This produces: `association name 'Enrol' conflicts with an entity of the same na
 This is a design trade-off. Terraform, for instance, allows a `resource` and a `data` source to share the same logical name because they are distinguished by their block type (`resource "aws_instance" "web"` vs `data "aws_instance" "web"`). MSD could have adopted a similar scheme — perhaps `link Student (0,N) association:Enrol` — but the added syntax complexity was not justified for the domain.
 
 > **Warning:** Cross-namespace conflicts are easy to overlook during design. If your DSL has multiple kinds of named things (types, variables, functions, modules), decide early whether names must be globally unique or only unique within their kind. Ambiguous resolution rules will confuse users and complicate your implementation.
+
+> **Programmer:** DSL semantic checks are essentially business logic validation moved into the language layer, and this shift catches entire categories of bugs at authoring time rather than at runtime. Consider how Terraform's `terraform validate` command catches invalid resource references, type mismatches, and missing required attributes before any infrastructure is provisioned. In Go, the compiler's semantic analysis rejects programs where a variable is declared but never used, where an interface is not satisfied, or where a type assertion is provably impossible. Your DSL's semantic layer should aim for the same goal: every constraint that can be checked statically should be, because an error caught by the DSL tool costs the user seconds to fix, whilst the same error discovered in production can cost hours or worse.
 
 ## 6.6 Validation Rules and Constraint Checking
 

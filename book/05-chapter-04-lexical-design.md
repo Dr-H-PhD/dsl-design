@@ -84,6 +84,8 @@ keyword_type = KEYWORDS.get(word.lower())
 
 > **Note:** Case-insensitive keywords do not imply case-insensitive identifiers. In MSD, `entity` and `ENTITY` are the same keyword, but `Student` and `student` are different entity names. This split approach -- case-insensitive keywords, case-sensitive identifiers -- is the same strategy SQL uses for its keywords versus table and column names.
 
+> **Programmer:** Token design in a DSL mirrors the naming conventions you apply when designing a Go API. Just as Go's exported identifiers start with an uppercase letter and unexported ones with lowercase, your DSL's keywords should follow intuitive conventions that reduce cognitive load. Go's `go/token` package is an excellent reference: it defines every token type as a named constant (`token.FUNC`, `token.RETURN`, `token.LBRACE`) and uses a lookup table to map identifier strings to keyword tokens -- exactly the pattern MSD uses. If you are implementing a DSL in Go, modelling your `TokenType` enum and keyword map after `go/token` gives you a battle-tested design that handles reserved words, operator precedence metadata, and string representations cleanly.
+
 ### Choosing Keywords That Read Naturally
 
 Good keywords read like natural language in context. Consider MSD's `link` keyword:
@@ -279,6 +281,8 @@ Here is a table of common symbols and their typical meanings across DSLs:
 | `=`    | --                     | Assignment               | Value assignment    |
 
 > **Warning:** Avoid reusing a symbol with two very different meanings in the same language. If `*` means "primary key" in one context and "wildcard" in another, users will be confused. MSD uses `*` exclusively for primary keys, avoiding ambiguity.
+
+> **Programmer:** Ambiguity in token design has a direct impact on parser complexity, and Go's language design illustrates this beautifully. Go deliberately chose unambiguous tokens: the walrus operator `:=` for short variable declarations is syntactically distinct from `=` for assignment, and the language avoids overloading symbols with context-dependent meanings. This is why Go's parser is fast and its error messages are clear. When designing your DSL, resist the temptation to overload punctuation. MSD's choice to use `*` exclusively for primary keys and `()` for both cardinalities and type sizes works only because these appear in entirely different grammatical positions. If they could appear adjacently, the lexer would need context-sensitive rules that complicate both implementation and user comprehension.
 
 ## 4.6 Whitespace and Indentation
 

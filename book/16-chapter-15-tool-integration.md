@@ -32,6 +32,8 @@ Exit codes communicate success or failure to shell scripts and CI systems:
 
 > **Tip:** Always use distinct exit codes for different failure modes. A CI pipeline that treats all non-zero codes identically cannot distinguish between "the model has errors" (fixable by the author) and "the tool crashed" (needs infrastructure attention).
 
+> **Programmer:** The Language Server Protocol (LSP) is the modern standard for integrating a DSL into IDEs, and Go's `gopls` is the reference implementation to study. An LSP server for your DSL would expose your lexer as a token provider for syntax highlighting (via TextMate grammars or semantic tokens), your parser for real-time error diagnostics (red squiggles as the user types), and your semantic analyser for features like go-to-definition and hover information. In Go, building an LSP server is straightforward using libraries like `go.lsp.dev/protocol`. The key insight is that your DSL pipeline already does the heavy lifting -- the LSP server is merely a thin wrapper that calls `Parse()` and `Build()` on every file change and translates the resulting error list into LSP diagnostic objects.
+
 ### Error Output
 
 Errors go to stderr; success messages go to stdout. This lets users pipe output cleanly:
@@ -228,6 +230,8 @@ MSD files are plain text, which enables:
 - **Blame**: `git blame` shows who added each entity and when
 
 > **Info:** This is perhaps the strongest argument for text-based DSLs. A graphical-only tool cannot participate in the code review workflow that modern software teams depend on. A text DSL turns domain models into reviewable, versionable artefacts.
+
+> **Programmer:** Go's `go generate` directive is the canonical pattern for embedding DSL tools into a Go build pipeline. By adding `//go:generate merisio-cli schema.msd parse -o schema.merisio` to a Go source file, you ensure that the DSL is processed automatically whenever `go generate ./...` runs, and the generated output is checked into version control alongside the source. For CI/CD, you can lint DSL files in `go test` by writing a `TestValidateSchemas` function that walks a directory of `.msd` files and asserts that each one parses without errors. This treats your DSL files as first-class artefacts in the Go build system, with the same compile-test-deploy workflow that Go source code enjoys. Syntax highlighting for your DSL in VS Code requires only a TextMate grammar (a JSON file mapping regex patterns to token scopes) -- no server-side code needed.
 
 ## 15.5 The Integration Pattern: Library $\rightarrow$ CLI Wrapper $\rightarrow$ GUI Wrapper
 

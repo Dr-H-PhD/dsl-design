@@ -32,6 +32,8 @@ Every token carries a **source location**: the line number and column number whe
 
 > **Note:** Some lexers produce tokens lazily, yielding one at a time as the parser requests them. Others produce the entire list eagerly, up front. For small DSLs like MSD, eager tokenisation is simpler and perfectly adequate — the entire token list fits comfortably in memory. Lazy tokenisation becomes important for languages with very large source files or streaming input.
 
+> **Programmer:** Go provides two ready-made approaches for building lexers. For simple DSLs, `text/scanner` offers a configurable character-class scanner that handles identifiers, integers, floats, and strings out of the box -- you configure which token types to recognise and it does the character-level work. For full control, `bufio.Scanner` with a custom `SplitFunc` lets you define your own tokenisation logic whilst handling buffered I/O efficiently. Go's own lexer in `go/scanner` is a hand-written character-by-character scanner that tracks line/column positions and inserts semicolons automatically. For a DSL like MSD, a hand-written lexer of 100--200 lines of Go gives you complete control over error reporting, context sensitivity, and token position tracking -- all critical for producing the kind of precise error messages that make a DSL pleasant to use.
+
 ---
 
 ## 8.2 Token Representation
@@ -310,6 +312,8 @@ project {
 And the `STRING_VALUE` will be `"University Database"`, not `"University Database  # this is a comment"`.
 
 > **Warning:** Context sensitivity should be minimised. Every context-sensitive rule adds state to the lexer, making it harder to reason about and harder to test. MSD has exactly one context-sensitive case. If your DSL design calls for three or more, consider whether a syntax redesign could eliminate some of them. A common alternative is to use quoted strings (`name: "My Application"`) instead of rest-of-line capture, which removes the need for context sensitivity entirely — but at the cost of requiring users to type quotation marks around every metadata value.
+
+> **Programmer:** Error reporting with precise line and column numbers is what transforms a frustrating DSL into a productive one, and Go's `token.Position` type shows the standard approach. Every token in Go's lexer carries a `token.Pos` value that can be resolved to a filename, line, and column through the `token.FileSet`. For your DSL, storing `(line, column)` on every token is cheap -- two integers per token -- and it pays dividends throughout the pipeline. The parser uses positions for error messages, the semantic analyser uses them for "did you mean?" suggestions, and IDE integrations use them for syntax highlighting and jump-to-definition. If you skip position tracking to save implementation effort, you will regret it the moment your first user reports a confusing error with no source location.
 
 ---
 

@@ -68,6 +68,8 @@ Beyond the vocabulary, the domain imposes constraints that the language must enf
 
 > **Note:** The domain analysis does not prescribe *how* these constraints are enforced — only *what* they are. Whether a missing primary key is an error or a warning, for instance, is a semantic design decision made later.
 
+> **Programmer:** Domain modelling for a DSL is essentially the same discipline as designing Go structs for your domain. In MSD, the domain concepts -- entities, associations, links, attributes, cardinalities -- map directly to data structures in the implementation. This mirrors how Go developers model domains: a `Note` struct with fields for pitch, duration, and octave; a `Rest` struct with a duration; a `Bar` struct containing a slice of events. The DSL's syntax should read like a natural serialisation of these structs. If you find yourself writing a Go struct that feels awkward to represent in your DSL syntax, or DSL syntax that does not map cleanly to a Go struct, the mismatch is a signal that your domain model needs refinement.
+
 ## 7.3 Lexical Choices
 
 With the domain analysis complete, we turn to the lexical layer: what tokens will MSD use, and what rules govern them?
@@ -274,6 +276,8 @@ link_stmt     = "link" IDENTIFIER "(" INTEGER|IDENTIFIER "," INTEGER|IDENTIFIER 
 Six productions for an entire language. The grammar is LL(1) — at every decision point, a single token of lookahead suffices to determine which production to apply. This makes it straightforward to implement with recursive descent parsing, which we will do in Chapter 9.
 
 > **Warning:** The EBNF above is a design-level specification, not a formal parser specification. It omits newline handling, comment stripping, and context-sensitive lexing — all of which are handled at the lexer level before the parser sees the token stream.
+
+> **Programmer:** MSD's six-production grammar demonstrates a key principle: the DSL syntax should mirror the domain expert's vocabulary, not the programmer's implementation vocabulary. In music notation DSLs, you would write `note C4 quarter` rather than `Event{type: NOTE, pitch: 60, duration: 0.25}`, because musicians think in note names and durations, not MIDI numbers and floating-point fractions. Go's own syntax follows this philosophy -- `go func() { ... }()` reads as "go run this function concurrently," mapping directly to the mental model of goroutines rather than exposing thread creation details. When designing your DSL, always ask: would a domain expert recognise this syntax without reading the implementation?
 
 ## 7.5 Semantic Choices
 

@@ -167,6 +167,8 @@ External DSLs require significantly more engineering effort — you must build a
 
 > **Note:** This book focuses on **external DSLs**. While internal DSLs are a valuable technique, the design and implementation challenges of external DSLs are richer and more broadly applicable. If you understand how to build an external DSL, you can always fall back to an internal one — but not vice versa.
 
+> **Programmer:** DSLs are far more common in daily programming than most developers realise. SQL, HTML, CSS, regular expressions, Dockerfiles, Terraform HCL, YAML-based CI configurations, and even Go's `text/template` package are all domain-specific languages you likely use every week. The distinction between internal and external DSLs maps directly to a practical choice: Go's fluent builder pattern (e.g., chaining methods like `query.Select("name").From("users").Where("age > 21")`) is an internal DSL constrained by Go's syntax, whilst a standalone `.tf` or `.sql` file is an external DSL with its own parser. When you reach for `go generate` to process a custom file format, you are building external DSL tooling.
+
 ## 1.4 When to Build a DSL (and When Not To)
 
 Building a DSL is a significant investment. A well-designed DSL can save thousands of hours across an organisation; a poorly motivated one can waste just as many. Before committing, you should ask yourself a series of honest questions.
@@ -210,6 +212,8 @@ Ask these five questions before building a DSL:
 If you answered "yes" to questions 1, 2, and 5, and "multiple" to question 4, a DSL is likely justified. If most answers are uncertain, start with a library and see whether a language naturally emerges from usage patterns.
 
 > **Tip:** A useful litmus test: write ten representative examples of what users would express in the proposed DSL. If the examples look natural, concise, and reviewable — and if a library version of the same logic would be significantly worse — a DSL is probably the right choice.
+
+> **Programmer:** Go's standard library itself embeds this DSL-or-library decision. The `text/template` and `html/template` packages are a built-in DSL for text generation with their own lexer and parser, whilst the `net/http` package is a library API. The Go team chose a template DSL because expressing conditional text layout through function calls would be unreadable. Conversely, HTTP routing stayed as a library because the domain (matching paths and dispatching handlers) maps naturally to Go function signatures. This is exactly the decision framework described above: if the domain's notation is fundamentally different from the host language's syntax, an external DSL pays for itself.
 
 ## 1.5 The Language Spectrum
 

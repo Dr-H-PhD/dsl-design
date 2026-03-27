@@ -63,6 +63,8 @@ The algorithm simulates this physical system over many iterations. At each step,
 
 > **Info:** The physical analogy is not just a metaphor — it is the actual mathematical model. The repulsive force follows an inverse-distance law (like electrostatic repulsion), and the attractive force follows a quadratic law (like Hooke's law for springs). The algorithm literally simulates physics.
 
+> **Programmer:** Layout algorithms in DSL tools solve the same problem as CSS flexbox and grid layout in web browsers: positioning elements according to constraints without manual coordinate specification. Go's `image` package provides the coordinate system and drawing primitives for implementing layout engines, whilst SVG output can be generated via `text/template` with computed x/y coordinates injected into the template. For production-quality graph layout, the `gonum` library (`gonum.org/v1/gonum/graph`) provides graph data structures and algorithms that you can pair with a force-directed layout implementation. The constraint-based approach -- where you specify relationships (proximity, non-overlap, alignment) and let the algorithm compute positions -- is fundamentally declarative, mirroring the DSL's own philosophy.
+
 This family of algorithms includes several well-known variants:
 
 | Algorithm | Year | Key Idea |
@@ -319,6 +321,8 @@ MSD's layout achieves determinism through four mechanisms:
 4. **Integer rounding.** The final rounding step eliminates any residual floating-point differences between runs.
 
 > **Tip:** When building a DSL that generates visual output, always verify determinism in your test suite. A simple test is: run the layout twice on the same input and assert that all coordinates are identical. This catches accidental sources of non-determinism such as dictionary iteration order (in older Python versions), thread-local state, or system clock-seeded random number generators.
+
+> **Programmer:** When implementing layout algorithms in Go, the `math` package provides all the trigonometric and distance functions you need, and Go's deterministic map iteration order (since Go 1.12, maps iterate in a randomised but consistent-per-runtime order) means you must be careful to sort node lists before processing if you want reproducible layouts across runs. Go's `image` package defines the `image.Point` and `image.Rectangle` types that are natural fits for node positions and bounding boxes. For SVG output, compute coordinates as `float64` values, then format them into SVG `<rect>`, `<ellipse>`, and `<line>` elements using `fmt.Sprintf` or `text/template`. The entire Fruchterman-Reingold algorithm translates cleanly into Go: the outer iteration loop, the pairwise force computations, and the temperature cooling are all straightforward arithmetic with no dependencies beyond the standard library.
 
 The only non-deterministic element in MSD's pipeline is UUID generation (used by the builder to assign unique identifiers to entities, associations, and links). But UUIDs are generated in the builder, not the layout engine, and they do not affect position computation.
 

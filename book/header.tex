@@ -18,6 +18,8 @@
 \definecolor{infobg}{RGB}{225, 245, 254}
 \definecolor{noteyellow}{RGB}{255, 193, 7}
 \definecolor{notebg}{RGB}{255, 249, 231}
+\definecolor{programmerslate}{RGB}{55, 71, 79}
+\definecolor{programmerbg}{RGB}{236, 239, 241}
 \definecolor{codebg}{RGB}{248, 249, 250}
 \definecolor{quotegray}{RGB}{108, 117, 125}
 \definecolor{chapterblue}{RGB}{41, 128, 185}
@@ -76,6 +78,15 @@
   bottom=8pt,
   fonttitle=\bfseries,
   title={Info}
+}
+
+\newtcolorbox{programmerbox}{
+  colback=programmerbg,
+  colframe=programmerslate,
+  boxrule=1pt, arc=3pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  fonttitle=\bfseries,
+  title={Programmer's Perspective}
 }
 
 % Style blockquotes

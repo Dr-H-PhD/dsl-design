@@ -143,6 +143,8 @@ If the lookup succeeds, the builder has the `Entity` object and can use `entity.
 
 > **Note:** The `continue` statement after reporting an unresolved name is important. The builder does not attempt to create a `Link` with a missing entity or association — doing so would produce a malformed `Link` object with a `None` ID, which would cause errors downstream. Skipping the link entirely is the safer choice.
 
+> **Programmer:** The visitor pattern and Go's `ast.Walk` function offer two contrasting approaches to walking a parsed tree for validation. The visitor pattern (used in Java and Python AST libraries) defines an interface with a `Visit` method for each node type, and the tree drives the traversal. Go's `ast.Walk` takes the opposite approach: a single `func(ast.Node) bool` callback visits every node, and the walker handles the traversal. For small DSLs like MSD, a simple loop over slices (entities, then associations, then links) is more straightforward than either pattern. For larger DSLs with deeply nested ASTs, implementing Go's `ast.Inspect` pattern -- where a visitor function returns `true` to descend into children or `false` to skip them -- gives you clean, composable validation passes without the boilerplate of a full visitor interface.
+
 ---
 
 ## 10.3 Duplicate Detection and Conflict Checking
@@ -350,6 +352,8 @@ schema.msd:9: error: unknown entity: 'Tourits' (did you mean 'Tourist'?)
 ```
 
 > **Tip:** The Levenshtein distance algorithm is useful far beyond DSL error messages. It appears in spell checkers, DNA sequence alignment, plagiarism detection, and fuzzy search. If you implement it once as a utility function, you will find uses for it throughout your codebase.
+
+> **Programmer:** Go's `go/types.Config.Check()` is the model semantic analyser to study when building your own. It takes a parsed `*ast.Package`, resolves all identifiers to their declarations, type-checks every expression, and returns a `*types.Info` struct populated with the resolved type of every node. The errors it produces are collected into a slice rather than halting at the first failure -- exactly the continue-and-collect pattern MSD uses. For "did you mean?" suggestions, Go's `gopls` language server computes edit distances between unresolved identifiers and in-scope names, surfacing quick-fix suggestions in the IDE. If you implement your DSL's semantic analyser in Go, storing errors in a `[]error` slice (or a custom diagnostic type with position and severity) and collecting all of them before returning gives callers maximum flexibility in how they present the results.
 
 ---
 

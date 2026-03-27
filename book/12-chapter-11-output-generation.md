@@ -75,6 +75,8 @@ This is acceptable for two reasons:
 
 > **Note:** If deterministic output were required — for example, if the generated file needed to be committed to version control — the UUIDs could be derived from a hash of the entity name plus a project-level seed. MSD deliberately avoids this complexity because the `.msd` source, not the `.merisio` output, is the version-controlled artefact.
 
+> **Programmer:** Code generation from an AST is one of the most powerful applications of DSL design, and Go's `text/template` package is the tool of choice for textual output. When your DSL needs to generate SQL, YAML, or configuration files, you define a Go template with placeholders like `{{.EntityName}}` and execute it against your semantic model. For structured output like JSON, Go's `encoding/json` package with `json.Marshal` handles serialisation directly from Go structs, including nested types and custom `MarshalJSON` methods. For visual output like SVG diagrams, you can either use `text/template` with SVG markup or Go's `image` and `image/draw` packages for raster rendering. The visitor pattern enables multi-target output: define an `OutputVisitor` interface with methods like `VisitEntity` and `VisitAssociation`, then implement one visitor per target format (SQL, JSON, SVG).
+
 ---
 
 ## 11.3 Metadata Application and Defaults
@@ -169,6 +171,8 @@ def save_project(project: Project, file_path: str) -> bool:
 A key benefit of building a standard `Project` object is that the MSD pipeline reuses Merisio's existing serialisation code unchanged. The builder produces a `Project`; `FileIO.save_project()` writes it to disk. No special MSD-specific serialiser is needed. This is a significant advantage: every downstream tool that works with `.merisio` files — the GUI, the CLI, the SQL generator, the diagram exporter — works automatically with MSD-generated projects.
 
 > **Tip:** When designing an output generator for your DSL, aim to produce the same model object that the rest of your toolchain already uses. If your GUI application has a `Project` class with a `save()` method, make your DSL builder produce a `Project`. You get serialisation, loading, validation, and all downstream transformations for free.
+
+> **Programmer:** Go's `encoding/json` package with struct tags provides an elegant solution for DSL output serialisation. Define your model structs with `json:"field_name"` tags, and `json.MarshalIndent` produces human-readable JSON with no additional code. For more complex output formats, Go's `text/template` package supports template inheritance, custom functions, and pipeline composition -- enabling you to generate SQL DDL, HTML documentation, or configuration files from the same semantic model by swapping templates. The key architectural insight is the same one Go's standard library follows throughout: separate the data model (structs) from the serialisation format (encoding packages), so that adding a new output target never requires changing the core DSL pipeline.
 
 ---
 
