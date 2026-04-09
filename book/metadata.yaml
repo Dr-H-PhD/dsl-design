@@ -12,6 +12,7 @@ linkcolor: blue
 urlcolor: blue
 toc: true
 toc-depth: 3
+numbersections: false
 monofont: "DejaVu Sans Mono"
 mainfont: "DejaVu Serif"
 ---
