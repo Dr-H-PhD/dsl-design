@@ -4,3 +4,11 @@
 *.log
 *.out
 *.toc
+
+### Local context files (live in Dropbox via symlinks)
+*.local.md
+CLAUDE.local.md
+TRACKER.local.md
+
+### Claude session state
+.claude/
